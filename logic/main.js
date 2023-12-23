@@ -5,6 +5,13 @@ Imports make reference to classes and their methods within other files.
 N.B. All inputs are handled as strings until actual math is required.
 */
 
+// Imports
+import {
+    setAllToTrue,
+    setAllToFalse
+} from '../test/testing.js';
+
+
 /* TO-DO LIST
 I'm sure there's a better way to do it, but for now, it's a list here.
 - The following functions rely on a backend that does not exist.
@@ -159,34 +166,6 @@ function setContent(element, stringContent) {
     element.textContent = stringContent;
 }
 
-// TESTING FUNCTIONS
-
-// Set all values to true
-function setAllToTrue(actionObject) {
-    let initialActionsAllTrue = {
-        numeral: true,
-        decimal: true,
-        signage: true,
-        operator: true,
-        clearall: true,
-        backspace: true,
-    }
-    setAllowedActions(actionObject, initialActionsAllTrue);
-}
-
-// Set all values to false
-function setAllToFalse(actionObject) {
-    let initialActionsAllFalse = {
-        numeral: false,
-        decimal: false,
-        signage: false,
-        operator: false,
-        clearall: false,
-        backspace: false,
-    }
-    setAllowedActions(actionObject, initialActionsAllFalse);
-}
-
 // Initializes all the code upon start-up.
 function initialize() {
     // What should the initial state of permissions be?
@@ -202,8 +181,8 @@ function initialize() {
     return initialActions;
 }
 
-// Event listener for a button clicked in the calculator
-// Should wait until DOM loaded till it is accessible
+
+// Wait until DOM loaded till it is accessible
 document.addEventListener('DOMContentLoaded', function() {
 
     // ########## Code that runs ##########
@@ -230,6 +209,7 @@ document.addEventListener('DOMContentLoaded', function() {
         setAllToFalse(currentlyAllowedActions);
     });
     
+    // Event listener for a button clicked in the calculator
     calculator.addEventListener('click', function(event) {
         updateDisplay(event, currentlyAllowedActions,
         lowerWindow, upperWindow)
