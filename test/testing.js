@@ -1,7 +1,12 @@
 // TESTING FUNCTIONS
 
+// Need to import functions to make it work.
+import {
+    setAllowedActions
+} from '../logic/main.js';
+
 // Set all values in actionsObject to true
-function setAllToTrue(actionObject) {
+export function setAllToTrue(actionObject) {
     let initialActionsAllTrue = {
         numeral: true,
         decimal: true,
@@ -14,7 +19,7 @@ function setAllToTrue(actionObject) {
 }
 
 // Set all values in actionsObject to false
-function setAllToFalse(actionObject) {
+export function setAllToFalse(actionObject) {
     let initialActionsAllFalse = {
         numeral: false,
         decimal: false,

@@ -6,10 +6,12 @@ N.B. All inputs are handled as strings until actual math is required.
 */
 
 // Imports
-import {
+
+// ##### TESTING FUNCTIONS ##### Comment-out if in production.
+import { 
     setAllToTrue,
     setAllToFalse
-} from '../test/testing.js';
+ } from '../test/testing.js';
 
 
 /* TO-DO LIST
@@ -156,7 +158,8 @@ function getAllowedActions(actionsObject) {
 }
 
 // Set allowed actions based on current (after last button push) state
-function setAllowedActions(actionsObject, newStatus) {
+// Remove the export when testing is concluded.
+ export function setAllowedActions(actionsObject, newStatus) {
     // Vibe.
     actionsObject.setState(newStatus);
 }
