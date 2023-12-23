@@ -72,21 +72,12 @@ function updateDisplay(event, actionObject, bottomWindow, topWindow) {
 
     // What element was clicked?
     const clickedElement = event.target;
-    // console.log(clickedElement);
-
-
+    
     // What button was clicked?
     let typeClicked = determineButtonPressed(clickedElement);
     
     // What buttons are currently valid inputs?
     let validButtons = getAllowedActions(actionObject);
-    // console.log("Valid buttons below:");
-    // console.log(validButtons);
-
-    // let numeralStatus = validButtons[numeral];
-    // console.log(numeralStatus);
-    // console.log("Type clicked is " + typeClicked);
-    // console.log(validButtons[typeClicked]);
 
     // Is the button allowed?
     let isButtonClickValid = validButtons[typeClicked];
@@ -95,10 +86,7 @@ function updateDisplay(event, actionObject, bottomWindow, topWindow) {
     if (!isButtonClickValid) {
         // Not sure about best practice here. Feels neater than putting
         // everything inside a if(true) loop.
-        // return -1;
-        console.log("Invalid baby!");
-    } else {
-        console.log("Valid!");
+        return -1;
     }
 
     // Pass off information to allow updates.
@@ -131,7 +119,6 @@ function determineButtonPressed(element) {
         return numeral;
     } else if (clickedElementClassList.contains(decimal)) {
         // Button clicked is the decimal point.
-        // console.log(DECIMAL);
         return decimal;
     } else if (clickedElementClassList.contains(signage)) {
         // Button clicked is the + / - alternator.
