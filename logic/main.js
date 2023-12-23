@@ -5,6 +5,14 @@ Imports make reference to classes and their methods within other files.
 N.B. All inputs are handled as strings until actual math is required.
 */
 
+// Constants
+const NUMERAL = 'numeral';
+const DECIMAL = 'decimal';
+const SIGNAGE = 'signage';
+const OPERATOR = 'operator';
+const CLEARALL = 'clear-all';
+const DELETE = 'delete';
+
 // Actions allowed within the button pad.
 class AllowedActions {
     constructor(object) {
@@ -21,7 +29,7 @@ class AllowedActions {
 }
 
 // Update the content of the calculator windows.
-function updateDisplay(event, actionObject) {
+function updateDisplay(event, actionObject, bottomWindow, topWindow) {
     /*
     Called upon each event registered on the parent element.
     General logic flow is as follows:
@@ -42,14 +50,17 @@ function updateDisplay(event, actionObject) {
     n. Update the content of the windows.
     */
 
+    // What element was clicked?
+    let clickedElement = event.target;
+
     // What button was clicked?
-    let buttonClicked = determineButtonPressed(event);
+    let typeClicked = determineButtonPressed(clickedElement);
     
     // What buttons are currently valid inputs?
     let validButtons = getAllowedActions(actionObject);
 
     // Is the button allowed?
-    let isButtonClickValid = validButtons[buttonClicked];
+    let isButtonClickValid = validButtons[typeClicked];
 
     // If disallowed, return a warning value and do nothing.
     if (!isButtonClickValid) {
@@ -58,34 +69,51 @@ function updateDisplay(event, actionObject) {
         return -1;
     }
 
-    // Update allowed functions
+    // Pass off information to allow updates.
+    updateCalculatorState(clickedElement, typeClicked);
 
+    // Get back new window content. Make a call to the state object.
+    let newLowerWindow = false;
+    let newUpperWindow = false;
+
+    // Get updated status of permitted buttons.
+    let newAllowedActions = false;
+
+    // Update the allowed actions
+    setAllowedActions(newAllowedActions);
+
+    // Update the display
+    setContent(bottomWindow, newLowerWindow);
+    setContent(topWindow, newUpperWindow);
 }
 
 // Determine type of button pressed by the user.
-function determineButtonPressed(event) {
+function determineButtonPressed(element) {
     // Identifies the clicked button in the calculator.
     // Buttons are organized by CSS classes.
 
-    // Get the clicked element and it's classes.
-    let clickedElement = event.target;
-    let clickedElementClassList = clickedElement.classList;
+    let clickedElementClassList = element.classList;
 
-    if (clickedElementClassList.contains('numeral')) {
+    if (clickedElementClassList.contains(NUMERAL)) {
         // Button clicked is a numeral.
-    } else if (clickedElementClassList.contains('decimal')) {
+        return NUMERAL;
+    } else if (clickedElementClassList.contains(DECIMAL)) {
         // Button clicked is the decimal point.
-    } else if (clickedElementClassList.contains('signage')) {
+        return DECIMAL;
+    } else if (clickedElementClassList.contains(SIGNAGE)) {
         // Button clicked is the + / - alternator.
-    } else if (clickedElementClassList.contains('operator')) {
+        return SIGNAGE;
+    } else if (clickedElementClassList.contains(OPERATOR)) {
         // Button clicked is an operator
         // +, -, *, /, =
-    } else if (clickedElementClassList.contains('clear-all')) {
+        return OPERATOR;
+    } else if (clickedElementClassList.contains(CLEARALL)) {
         // Button clicked is the reset button.
-    } else if (clickedElementClassList.contains('delete')) {
+        return CLEARALL;
+    } else if (clickedElementClassList.contains(DELETE)) {
         // Button clicked is the backspace button.
+        return DELETE;
     }
-
     // If the click was anything else, take no action.
 }
 
@@ -102,16 +130,21 @@ function setAllowedActions(actionsObject) {
     actionsObject.setState();
 }
 
+// Set the text content of an element.
+function setContent(element, stringContent) {
+    element.textContent = stringContent;
+}
+
 // Initializes all the code upon start-up.
 function initialize() {
     // What should the initial state of permissions be?
     let initialActions = {
-        "numeral": true,
-        "decimal": true,
-        "signage": false,
-        "operator": false,
-        "clear-all": true,
-        "delete": true,
+        NUMERAL: true,
+        DECIMAL: true,
+        SIGNAGE: false,
+        OPERATOR: false,
+        CLERALL: true,
+        DELETE: true,
     }
 
     return initialActions;
@@ -122,5 +155,11 @@ function initialize() {
 // Object holding allowed actions for the session
 let currentlyAllowedActions = new AllowedActions(initialize());
 
+// Get the objects corresponding to the lower and upper windows
+let lowerWindow = document.querySelector("#lower-window");
+let upperWindow = document.querySelector("#upper-window");
+
 // Event listener for a button clicked in the calculator
-addEventListener('click', updateDisplay(e, currentlyAllowedActions));
+// Should wait until DOM loaded till it is accessible
+addEventListener('click', updateDisplay(e, currentlyAllowedActions,
+    lowerWindow, upperWindow));
