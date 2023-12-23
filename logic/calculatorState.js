@@ -14,14 +14,19 @@ class ScreenNumber {
 
     addDigit(digitChar) {
         // If there is space (either total or decimal).
-        if (decimalSpace && totalSpace) {
-            if (this.hasDecimal) {
-                this.decimalDigits.concat(digitChar);
-            } else {
-                this.intDigits.concat(digitChar);
-            }
+        // console.log(digitChar);
+        if (this.hasDecimal) {
+            // console.log("I think it has decimals");
+            this.decimalDigits = this.decimalDigits.concat(digitChar);
+        } else {
+            // console.log("I do not think it has decimals");
+            this.intDigits = this.intDigits.concat(digitChar);
         }
 
+        console.log("Integer part:")
+        console.log(this.intDigits);
+        console.log("Decimal part:")
+        console.log(this.decimalDigits);
     }
 
     changeSign() {
@@ -44,20 +49,24 @@ class ScreenNumber {
 
         // Add the sign.
         if (!(this.isPositive)) {
-            fullNumber.concat("-");
+            fullNumber = fullNumber.concat("-");
         }
 
         // Add the integer portion.
-        fullNumber.concat(this.intDigits);
+        fullNumber = fullNumber.concat(this.intDigits);
 
         // If it is a decimal, add that content in.
         if (this.hasDecimal) {
-            fullNumber.concat(".");
-            fullNumber.concat(this.decimalDigits);
+            fullNumber = fullNumber.concat(".");
+            fullNumber = fullNumber.concat(this.decimalDigits);
         }
 
         return fullNumber;
     }
 }
 
-let firstNumber = new ScreenNumber();
+// export default ScreenNumber;
+
+// let firstNumber = new ScreenNumber();
+// firstNumber.addDigit("1");
+// console.log(firstNumber);
