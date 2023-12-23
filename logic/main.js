@@ -13,7 +13,6 @@ import {
     setAllToFalse
  } from '../test/testing.js';
 
-
 /* TO-DO LIST
 I'm sure there's a better way to do it, but for now, it's a list here.
 - The following functions rely on a backend that does not exist.
