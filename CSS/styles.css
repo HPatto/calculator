@@ -1,1 +1,16 @@
 /* Stylesheet used for calculator */
+
+.container {
+    display: flex;
+    padding: 100px;
+    gap: 30px;
+}
+
+.numeral,
+.decimal,
+.signage,
+.operator,
+.clear-all,
+.delete {
+    flex: 1;
+}

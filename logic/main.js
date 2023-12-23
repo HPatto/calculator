@@ -77,11 +77,14 @@ function updateDisplay(event, actionObject, bottomWindow, topWindow) {
     if (!isButtonClickValid) {
         // Not sure about best practice here. Feels neater than putting
         // everything inside a if(true) loop.
-        return -1;
+        // return -1;
+        console.log("Invalid baby!");
+    } else {
+        console.log("Valid!");
     }
 
     // Pass off information to allow updates.
-    updateCalculatorState(clickedElement, typeClicked);
+    // updateCalculatorState(clickedElement, typeClicked);
 
     // Get back new window content. Make a call to the state object.
     let newLowerWindow = false;
@@ -91,11 +94,11 @@ function updateDisplay(event, actionObject, bottomWindow, topWindow) {
     let newAllowedActions = false;
 
     // Update the allowed actions
-    setAllowedActions(newAllowedActions);
+    // setAllowedActions(newAllowedActions);
 
     // Update the display
-    setContent(bottomWindow, newLowerWindow);
-    setContent(topWindow, newUpperWindow);
+    // setContent(bottomWindow, newLowerWindow);
+    // setContent(topWindow, newUpperWindow);
 }
 
 // Determine type of button pressed by the user.
