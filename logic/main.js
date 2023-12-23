@@ -54,11 +54,9 @@ function updateDisplay(event, actionObject, bottomWindow, topWindow) {
     Called upon each event registered on the parent element.
     General logic flow is as follows:
 
-    1. Take the event.
-
-    2. Determine the button clicked.
-
-    3. Get the allowed functions (stored in an object here?).
+    1. Take the event. (DONE)
+    2. Determine the button clicked. (DONE)
+    3. Get the allowed functions (DONE).
     I'd like this to be an object with button classes as keys,
     and a boolean value on if they are allowed.
 
