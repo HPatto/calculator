@@ -5,6 +5,17 @@ Imports make reference to classes and their methods within other files.
 N.B. All inputs are handled as strings until actual math is required.
 */
 
+/* TO-DO LIST
+I'm sure there's a better way to do it, but for now, it's a list here.
+- The following functions rely on a backend that does not exist.
+-- updateCalculatorState()
+-- newLowerWindow()
+-- newUpperWindow()
+-- newAllowedActions()
+
+Happy with the structure of this so far.
+*/
+
 // Constants
 const NUMERAL = 'numeral';
 const DECIMAL = 'decimal';
