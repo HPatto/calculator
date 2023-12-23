@@ -71,13 +71,13 @@ function updateDisplay(event, actionObject, bottomWindow, topWindow) {
     
     // What buttons are currently valid inputs?
     let validButtons = getAllowedActions(actionObject);
-    console.log("Valid buttons below:");
-    console.log(validButtons);
+    // console.log("Valid buttons below:");
+    // console.log(validButtons);
 
     // let numeralStatus = validButtons[numeral];
     // console.log(numeralStatus);
-    console.log("Type clicked is " + typeClicked);
-    console.log(validButtons[typeClicked]);
+    // console.log("Type clicked is " + typeClicked);
+    // console.log(validButtons[typeClicked]);
 
     // Is the button allowed?
     let isButtonClickValid = validButtons[typeClicked];
@@ -87,9 +87,9 @@ function updateDisplay(event, actionObject, bottomWindow, topWindow) {
         // Not sure about best practice here. Feels neater than putting
         // everything inside a if(true) loop.
         // return -1;
-        // console.log("Invalid baby!");
+        console.log("Invalid baby!");
     } else {
-        // console.log("Valid!");
+        console.log("Valid!");
     }
 
     // Pass off information to allow updates.
@@ -149,14 +149,42 @@ function getAllowedActions(actionsObject) {
 }
 
 // Set allowed actions based on current (after last button push) state
-function setAllowedActions(actionsObject) {
+function setAllowedActions(actionsObject, newStatus) {
     // Vibe.
-    actionsObject.setState();
+    actionsObject.setState(newStatus);
 }
 
 // Set the text content of an element.
 function setContent(element, stringContent) {
     element.textContent = stringContent;
+}
+
+// TESTING FUNCTIONS
+
+// Set all values to true
+function setAllToTrue(actionObject) {
+    let initialActionsAllTrue = {
+        numeral: true,
+        decimal: true,
+        signage: true,
+        operator: true,
+        clearall: true,
+        backspace: true,
+    }
+    setAllowedActions(actionObject, initialActionsAllTrue);
+}
+
+// Set all values to false
+function setAllToFalse(actionObject) {
+    let initialActionsAllFalse = {
+        numeral: false,
+        decimal: false,
+        signage: false,
+        operator: false,
+        clearall: false,
+        backspace: false,
+    }
+    setAllowedActions(actionObject, initialActionsAllFalse);
 }
 
 // Initializes all the code upon start-up.
@@ -189,6 +217,18 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Get the object corresponding to the calculator
     let calculator = document.querySelector('.container');
+
+    // TESTING ELEMENTS
+    let allTrue = document.querySelector('#alltrue');
+    let allFalse = document.querySelector('#allfalse');
+
+    allTrue.addEventListener('click', function () {
+        setAllToTrue(currentlyAllowedActions);
+    });
+
+    allFalse.addEventListener('click', function () {
+        setAllToFalse(currentlyAllowedActions);
+    });
     
     calculator.addEventListener('click', function(event) {
         updateDisplay(event, currentlyAllowedActions,
