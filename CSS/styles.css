@@ -10,7 +10,7 @@
 .decimal,
 .signage,
 .operator,
-.clear-all,
-.delete {
+.clearall,
+.backspace {
     flex: 1;
 }

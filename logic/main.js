@@ -17,12 +17,12 @@ Happy with the structure of this so far.
 */
 
 // Constants
-const NUMERAL = 'numeral';
-const DECIMAL = 'decimal';
-const SIGNAGE = 'signage';
-const OPERATOR = 'operator';
-const CLEARALL = 'clear-all';
-const DELETE = 'delete';
+const numeral = 'numeral';
+const decimal = 'decimal';
+const signage = 'signage';
+const operator = 'operator';
+const clearall = 'clearall';
+const backspace = 'backspace';
 
 // Actions allowed within the button pad.
 class AllowedActions {
@@ -62,13 +62,22 @@ function updateDisplay(event, actionObject, bottomWindow, topWindow) {
     */
 
     // What element was clicked?
-    let clickedElement = event.target;
+    const clickedElement = event.target;
+    // console.log(clickedElement);
+
 
     // What button was clicked?
     let typeClicked = determineButtonPressed(clickedElement);
     
     // What buttons are currently valid inputs?
     let validButtons = getAllowedActions(actionObject);
+    console.log("Valid buttons below:");
+    console.log(validButtons);
+
+    // let numeralStatus = validButtons[numeral];
+    // console.log(numeralStatus);
+    console.log("Type clicked is " + typeClicked);
+    console.log(validButtons[typeClicked]);
 
     // Is the button allowed?
     let isButtonClickValid = validButtons[typeClicked];
@@ -78,9 +87,9 @@ function updateDisplay(event, actionObject, bottomWindow, topWindow) {
         // Not sure about best practice here. Feels neater than putting
         // everything inside a if(true) loop.
         // return -1;
-        console.log("Invalid baby!");
+        // console.log("Invalid baby!");
     } else {
-        console.log("Valid!");
+        // console.log("Valid!");
     }
 
     // Pass off information to allow updates.
@@ -108,25 +117,26 @@ function determineButtonPressed(element) {
 
     let clickedElementClassList = element.classList;
 
-    if (clickedElementClassList.contains(NUMERAL)) {
+    if (clickedElementClassList.contains(numeral)) {
         // Button clicked is a numeral.
-        return NUMERAL;
-    } else if (clickedElementClassList.contains(DECIMAL)) {
+        return numeral;
+    } else if (clickedElementClassList.contains(decimal)) {
         // Button clicked is the decimal point.
-        return DECIMAL;
-    } else if (clickedElementClassList.contains(SIGNAGE)) {
+        // console.log(DECIMAL);
+        return decimal;
+    } else if (clickedElementClassList.contains(signage)) {
         // Button clicked is the + / - alternator.
-        return SIGNAGE;
-    } else if (clickedElementClassList.contains(OPERATOR)) {
+        return signage;
+    } else if (clickedElementClassList.contains(operator)) {
         // Button clicked is an operator
         // +, -, *, /, =
-        return OPERATOR;
-    } else if (clickedElementClassList.contains(CLEARALL)) {
+        return operator;
+    } else if (clickedElementClassList.contains(clearall)) {
         // Button clicked is the reset button.
-        return CLEARALL;
-    } else if (clickedElementClassList.contains(DELETE)) {
+        return clearall;
+    } else if (clickedElementClassList.contains(backspace)) {
         // Button clicked is the backspace button.
-        return DELETE;
+        return backspace;
     }
     // If the click was anything else, take no action.
 }
@@ -153,27 +163,35 @@ function setContent(element, stringContent) {
 function initialize() {
     // What should the initial state of permissions be?
     let initialActions = {
-        NUMERAL: true,
-        DECIMAL: true,
-        SIGNAGE: false,
-        OPERATOR: false,
-        CLERALL: true,
-        DELETE: true,
+        numeral: true,
+        decimal: true,
+        signage: false,
+        operator: false,
+        clearall: true,
+        backspace: true,
     }
 
     return initialActions;
 }
 
-// ########## Code that runs ##########
-
-// Object holding allowed actions for the session
-let currentlyAllowedActions = new AllowedActions(initialize());
-
-// Get the objects corresponding to the lower and upper windows
-let lowerWindow = document.querySelector("#lower-window");
-let upperWindow = document.querySelector("#upper-window");
-
 // Event listener for a button clicked in the calculator
 // Should wait until DOM loaded till it is accessible
-addEventListener('click', updateDisplay(e, currentlyAllowedActions,
-    lowerWindow, upperWindow));
+document.addEventListener('DOMContentLoaded', function() {
+
+    // ########## Code that runs ##########
+
+    // Object holding allowed actions for the session
+    let currentlyAllowedActions = new AllowedActions(initialize());
+
+    // Get the objects corresponding to the lower and upper windows
+    let lowerWindow = document.querySelector("#lower-window");
+    let upperWindow = document.querySelector("#upper-window");
+
+    // Get the object corresponding to the calculator
+    let calculator = document.querySelector('.container');
+    
+    calculator.addEventListener('click', function(event) {
+        updateDisplay(event, currentlyAllowedActions,
+        lowerWindow, upperWindow)
+    });
+});
