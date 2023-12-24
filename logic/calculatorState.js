@@ -17,7 +17,7 @@ class ScreenNumber {
     // Add a digit to the number object.
     addDigit(digitChar) {
         // If there is space (either total or decimal).
-        if (this.spaceAvailable) {
+        if (this.spaceAvailable()) {
             if (this.hasDecimal) {
                 this.decimalDigits = this.decimalDigits.concat(digitChar);
             } else {
@@ -69,6 +69,12 @@ class ScreenNumber {
         let totalDigits = this.digitCount(this.decimalDigits)
                         + this.digitCount(this.intDigits);
 
+        // console.log("Number of current decimal digits:");
+        // console.log(this.digitCount(this.decimalDigits));
+
+        // console.log("Number of current integer digits:");
+        // console.log(this.digitCount(this.intDigits));
+
         return ((totalDigits < this.totalDigitLimit) &&
             (this.digitCount(this.decimalDigits) < this.decimalDigitLimit));
     }
@@ -117,5 +123,165 @@ class ScreenNumber {
         }
 
         return fullNumber;
+    }
+}
+
+class TopWindow {
+    constructor() {
+        this.firstNumberObject = null;
+        this.operator = "";
+        this.secondNumberObject = null;
+        this.evaluated = false;
+    }
+
+    setFirstNumber(screenNumberObject) {
+        this.firstNumberObject = screenNumberObject.getFullNumber();
+    }
+
+    setSecondNumber(screenNumberObject) {
+        this.secondNumberObject = screenNumberObject.getFullNumber();
+    }
+
+    setOperator(operatorString) {
+        this.operator = operatorString;
+    }
+
+    holdsFirstNumber() {
+        return (this.firstNumberObject !== null);
+    }
+
+    holdsSecondNumber() {
+        return (this.secondNumberObject !== null);
+    }
+
+    getWindowState() {
+        let windowState = "";
+
+        windowState = (
+            windowState
+            + this.firstNumberObject.getFullNumber()
+            + " "
+            + this.operator
+            );
+        
+        if (this.evaluated) {
+            windowState = (
+                windowState
+                + " "
+                + this.secondNumber.getFullNumber()
+                + " ="
+            );
+        }
+
+        return windowState;
+    }
+
+}
+
+class BottomWindow {
+    constructor() {
+        this.currentNumberObject = null;
+    }
+
+    setCurrentNumber(screenNumberObject) {
+        this.currentNumberObject = screenNumberObject;
+    }
+
+    holdsCurrentNumber() {
+        return (this.currentNumberObject !== null);
+    }
+
+    getWindowState() {
+        return this.currentNumberObject.getFullNumber();
+    }
+}
+
+class UserWindow {
+    constructor() {
+        // Instantiate the active number
+        this.activeNumber = new ScreenNumber();
+
+        // Instantiate the window objects
+        this.topWindow = new TopWindow();
+        this.bottomWindow = new BottomWindow();
+    }
+
+    determineUpdate(arrayOfStrings) {
+        // Which update function to run?
+    }
+
+    // Update current number as appropriate with numeral
+    addNumeral(numeralString) {
+        this.activeNumber.addDigit(numeralString);
+        this.updateBottomWindow();
+    }
+
+    // Update current number as appropriate with decimal
+    addDecimal() {
+        this.activeNumber.addDecimal();
+        this.updateBottomWindow();
+    }
+
+    // Update current number as appropriate with character removal
+    deleteChar() {
+        this.activeNumber.removeChar();
+        this.updateBottomWindow();
+    }
+
+    // Update the current number as appropriate with signage
+    flipSign() {
+        this.activeNumber.changeSign();
+        this.updateBottomWindow();
+    }
+
+    // 
+    applyOperator(operatorString) {
+        /*
+        Considerations:
+
+        - If !top and !bottom, do nothing
+        - If top and bottom, eval and then apply op.
+        - If bottom and !top, send that info to the top window.
+        - If !bottom and top, update the op in the top window.
+
+        Does bottom window have a number?
+        Does top window have 0 / 1 / 2 numbers?
+        */
+
+        let isFirstSet = this.topWindow.holdsFirstNumber();
+        let isSecondSet = this.topWindow.holdsSecondNumber();
+        let isCurrent = this.bottomWindow.holdsCurrentNumber();
+
+
+
+    }
+
+    evaluateCalc() {
+        // If allowed, carry out the calculation.
+    }
+
+    // Reset the calculator to the default state
+    resetCalc() {
+        // Instantiate the active number
+        this.activeNumber = new ScreenNumber();
+
+        // Instantiate the window objects
+        this.topWindow = new TopWindow();
+        this.bottomWindow = new BottomWindow();
+    }
+
+    // Update status of the bottom window with current number
+    updateBottomWindow() {
+        this.bottomWindow.setCurrentNumber(this.activeNumber);
+    }
+
+    // Get string representation of top window
+    getTopWindowState() {
+        return this.topWindow.getWindowState();
+    }
+
+    // Get string representation of bottom window
+    getBottomWindowState() {
+        return this.bottomWindow.getWindowState();
     }
 }
