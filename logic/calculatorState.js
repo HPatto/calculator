@@ -3,26 +3,30 @@ Collection of the classes and functions facilitating the updates to
 the calculator.
 */
 
+// Abstraction of the inputted user numbers
 class ScreenNumber {
     constructor() {
         this.intDigits = "";
         this.decimalDigits = "";
         this.isPositive = true;
         this.hasDecimal = false;
-        this.totalLength = 0;
+        this.totalDigitLimit = 21;
+        this.decimalDigitLimit = 9;
     }
 
     addDigit(digitChar) {
         // If there is space (either total or decimal).
-        // console.log(digitChar);
-        if (this.hasDecimal) {
-            // console.log("I think it has decimals");
-            this.decimalDigits = this.decimalDigits.concat(digitChar);
-        } else {
-            // console.log("I do not think it has decimals");
-            this.intDigits = this.intDigits.concat(digitChar);
+        if (this.spaceAvailable) {
+            if (this.hasDecimal) {
+                if (this.intDigits.length === 0) {
+                    this.intDigits = this.intDigits.concat("0");
+                }
+                this.decimalDigits = this.decimalDigits.concat(digitChar);
+            } else {
+                this.intDigits = this.intDigits.concat(digitChar);
+            }
         }
-
+        
         console.log("Integer part:")
         console.log(this.intDigits);
         console.log("Decimal part:")
@@ -43,13 +47,30 @@ class ScreenNumber {
         }        
     }
 
+    spaceAvailable() {
+        let totalDigits = this.decimalDigits.length
+                        + this.intDigits.length;
+
+        return ((totalDigits < this.totalDigitLimit) &&
+            (this.decimalDigits.length < this.decimalDigitLimit));
+    }
+
+    numeralsAdded() {
+        return (this.intDigits.length > 0);
+    }
+
     getFullNumber() {
         // Define an empty string, then add to it sequentially.
         let fullNumber = "";
 
-        // Add the sign.
-        if (!(this.isPositive)) {
-            fullNumber = fullNumber.concat("-");
+        // Add the sign if content has been input.
+        // Might be confusing, in that no (-) will show up till first
+        // number is pressed, even though the state has changed.
+        // Put in a highlight option?
+        if (this.numeralsAdded()) {
+            if (!(this.isPositive)) {
+                fullNumber = fullNumber.concat("-");
+            }
         }
 
         // Add the integer portion.
@@ -60,13 +81,11 @@ class ScreenNumber {
             fullNumber = fullNumber.concat(".");
             fullNumber = fullNumber.concat(this.decimalDigits);
         }
-
         return fullNumber;
     }
 }
 
-// export default ScreenNumber;
+// Abstraction of the userWindow objects
+class inputWindow {
 
-// let firstNumber = new ScreenNumber();
-// firstNumber.addDigit("1");
-// console.log(firstNumber);
+}
