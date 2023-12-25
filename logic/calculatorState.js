@@ -407,6 +407,7 @@ class BottomWindow {
 
             // Update the top window with the result
             this.topWindow.setFirstNumber(this.bottomWindow.getCurrentNumber());
+            this.topWindow.setOperator(operatorString);
 
             // Build a new bottomWindow and currentNumber
             this.bottomWindow = new BottomWindow();
