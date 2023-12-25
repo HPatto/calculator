@@ -198,6 +198,10 @@ class TopWindow {
         this.operator = operatorString;
     }
 
+    setEvaluated() {
+        this.evaluated = true;
+    }
+
     holdsFirstNumber() {
         return (this.firstNumberObject !== null);
     }
@@ -305,13 +309,8 @@ class UserWindow {
         Does bottom window have a number?
         Does top window have 0 / 1 / 2 numbers?
         */
-
-        let isFirstSet = this.topWindow.holdsFirstNumber();
-        let isSecondSet = this.topWindow.holdsSecondNumber();
-        let isCurrent = this.bottomWindow.holdsCurrentNumber();
-
-        
-        if (isCurrent && (!isFirstSet && !isSecondSet)) {
+       
+        if (this.isCurrent() && (!this.isFirstSet() && !this.isSecondSet())) {
             // Apply operation to un-executed calculation
             
             // Send current number to the topWindow
@@ -325,23 +324,19 @@ class UserWindow {
 
             // Build a new bottomWindow object
             this.bottomWindow = new BottomWindow();
-        } else if (!isCurrent && isFirstSet && !isSecondSet) {
+        } else if (!this.isCurrent() && this.isFirstSet() && !this.isSecondSet()) {
             // Update operation for unexecuted calculation
 
             // Send current operation to the topWindow
             this.topWindow.setOperator(operatorString);
-        } else if (isCurrent && isFirstSet && !isSecondSet) {
+        } else if (this.isCurrent() && this.isFirstSet() && !this.isSecondSet()) {
             // Carry out set calculation, update with new input
 
             // Build calculation object with currentNum & firstNum
-            let calculationObject = new CalculationObject(
-                this.topWindow.getFirstNumber(),
-                this.topWindow.getOperator(),
-                this.bottomWindow.getCurrentNumber()
-            );
+            let calcObject = this.buildCalcObject(this.topWindow, this.bottomWindow);
 
             // Get the result of the calculation
-            let resultNumber = calculate(calculationObject);
+            let resultNumber = this.evaluateCalc(calcObject);
 
             // Create new topWindow
             this.topWindow = new TopWindow();
@@ -353,7 +348,7 @@ class UserWindow {
             // Create new bottomWindow & currentNumber
             this.bottomWindow = new BottomWindow();
             this.activeNumber = new ScreenNumber();
-        } else if (isCurrent && isFirstSet && isSecondSet) {
+        } else if (this.isCurrent() && this.isFirstSet() && this.isSecondSet()) {
             // Top window has the full summary
             // Bottom window has the result
 
@@ -367,23 +362,94 @@ class UserWindow {
             this.bottomWindow = new BottomWindow();
             this.activeNumber = new ScreenNumber();
         }
-
-
-
     }
 
-    // Evaluate the calculation
+    // Apply the equals operator.
+    applyEquals() {
+        /* 
+        Equals can be applied in the following scenarios:
+        1. One number up top and one number down below
+        */
+
+        // Is the current state suitable to be evaluated?
+        if (this.isFirstSet() && this.isCurrent() && !this.isSecondSet()) {
+            // Build the relevant calculation object
+            let calcObject = this.buildCalcObject(this.topWindow, this.bottomWindow);
+            
+            // Get the result
+            let result = this.evaluateCalc(calcObject);
+
+            // Update the top window
+            this.topWindow.setSecondNumber(this.bottomWindow.getCurrentNumber());
+            this.topWindow.setEvaluated();
+
+            // Assign new currentNumber and bottomWindow
+            this.activeNumber = result;
+            this.bottomWindow = new BottomWindow();
+
+            // Update the bottom window
+            this.updateBottomWindow();
+        }
+    }
+
+    // Build the relevant calculation object
+    buildCalcObject(topWindow, bottomWindow) {
+        // Build calculation object with currentNum & firstNum
+        let calculationObject = new CalculationObject(
+            this.topWindow.getFirstNumber(),
+            this.topWindow.getOperator(),
+            this.bottomWindow.getCurrentNumber()
+        );
+
+        return calculationObject;
+    }
+
+    // Evaluate the calculation object
     evaluateCalc(calcObject) {
-        // If allowed, carry out the calculation.
+        
+        // If not allowed, warn the user
+        if (this.isDivideByZero(calcObject)) {
+            snarkyMessage();
+            return -1;
+        }
+
+        // Get back a resultNumber object
+        return calculate(calcObject);
     }
 
+    // Check if the firstNum in top window is set.
+    isFirstSet() {
+        return this.topWindow.holdsFirstNumber();
+    }
+
+    // Check if the secondNum in top window is set.
+    isSecondSet() {
+        return this.topWindow.holdsSecondNumber();
+    }
+
+    // Check if there is valid content in the bottom window.
+    isCurrent() {
+        return this.bottomWindow.holdsCurrentNumber();
+    }
+
+    // Check a calculation object for a divide by zero request
     isDivideByZero(calcObject) {
         let [op, value] = calcObject.getState().slice(1);
 
-        // if (op === "/" && value === "0")
+        // Are we dividing? If not, false
+        if (!(op === "/")) {
+            return false;
+        }
 
+        // Is the number 0? If not, false
+        if (!(this.isZero(value))) {
+            return false;
+        }
+
+        return true;
     }
 
+    // Check if a screenNumber object is equal to 0
     isZero(numberObject) {
         // Is the int portion only zeroes?
         // Is there a decimal portion?
@@ -402,6 +468,7 @@ class UserWindow {
         return true;
     }
 
+    // Check if a string has only 0's
     hasOnlyZeroes(digitString) {
         let digitArray = digitString.split("");
 
