@@ -214,8 +214,8 @@ class TopWindow {
         let windowState = "";
 
         if (this.firstNumberObject !== null) {
-            console.log("First number object is not NULL");
-            console.log(this.firstNumberObject);
+            // console.log("First number object is not NULL");
+            // console.log(this.firstNumberObject);
             windowState = (
                 windowState
                 + this.firstNumberObject.getFullNumber()
@@ -341,10 +341,9 @@ class BottomWindow {
         */
 
         // console.log(operatorString);
-
-        console.log("First is set: " + this.isFirstSet());
-        console.log("Second is set: " + this.isSecondSet());
-        console.log("Current is set: " + this.isCurrent());
+        // console.log("First is set: " + this.isFirstSet());
+        // console.log("Second is set: " + this.isSecondSet());
+        // console.log("Current is set: " + this.isCurrent());
        
         if (this.isCurrent() && (!this.isFirstSet() && !this.isSecondSet())) {
             // Apply operation to un-executed calculation
@@ -352,8 +351,8 @@ class BottomWindow {
             
             // Send current number to the topWindow
             this.topWindow.setFirstNumber(this.activeNumber);
-            console.log("Top Window first number set - appaz");
-            console.log(this.topWindow.getWindowState());
+            // console.log("Top Window first number set - appaz");
+            // console.log(this.topWindow.getWindowState());
 
             // Send current operation to the topWindow
             this.topWindow.setOperator(operatorString);
