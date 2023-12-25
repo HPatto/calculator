@@ -5,17 +5,16 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="CSS/styles.css">
     <!-- <script src="logic/main.js" type="module" defer></script> -->
-    <script src="logic/calculatorState.js" defer></script>
+    <script src="logic/main.js" type="module" defer></script>
+    <script src="logic/calculatorState.js" type="module" defer></script>
     <title>Calculator</title>
 </head>
 <body>
     <div class="container">
         <div class="calculator">
             <div class="windows">
-                <div class="upper-window">
-                    -123456789012.345678901 + -123456789012.345678901 = 
-                </div>
-                <div class="lower-window">-123456789012.345678901</div>
+                <div class="upper-window" id="upper-window"></div>
+                <div class="lower-window" id="lower-window"></div>
             </div>
             <div class="buttons">
                 <div class="upper-buttons">

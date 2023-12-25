@@ -7,11 +7,7 @@ N.B. All inputs are handled as strings until actual math is required.
 
 // Imports
 
-// ##### TESTING FUNCTIONS ##### Comment-out if in production.
-import { 
-    setAllToTrue,
-    setAllToFalse
- } from '../test/testing.js';
+ import { UserWindow } from '../logic/calculatorState.js';
 
 /* TO-DO LIST
 I'm sure there's a better way to do it, but for now, it's a list here.
@@ -46,6 +42,8 @@ function updateDisplay(event, bottomWindow, topWindow, calculatorObject) {
     
     // What button was clicked?
     let typeClicked = determineButtonPressed(clickedElement);
+
+    // console.log("Type clicked: " + typeClicked);
 
     // Pass off information to allow updates.
     updateCalculatorState(calculatorObject, clickedElement, typeClicked);
@@ -112,7 +110,7 @@ document.addEventListener('DOMContentLoaded', function() {
     let upperWindow = document.querySelector("#upper-window");
 
     // Get the object corresponding to the calculator
-    let calculator = document.querySelector('.container');
+    let calculator = document.querySelector('.calculator');
     
     // Event listener for a button clicked in the calculator
     calculator.addEventListener('click', function(event) {

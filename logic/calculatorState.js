@@ -179,7 +179,7 @@ class TopWindow {
     }
 
     setFirstNumber(screenNumberObject) {
-        this.firstNumberObject = screenNumberObject.getFullNumber();
+        this.firstNumberObject = screenNumberObject; //.getFullNumber();
     }
 
     getSecondNumber() {
@@ -187,7 +187,7 @@ class TopWindow {
     }
 
     setSecondNumber(screenNumberObject) {
-        this.secondNumberObject = screenNumberObject.getFullNumber();
+        this.secondNumberObject = screenNumberObject; //.getFullNumber();
     }
 
     getOperator() {
@@ -213,20 +213,24 @@ class TopWindow {
     getWindowState() {
         let windowState = "";
 
-        windowState = (
-            windowState
-            + this.firstNumberObject.getFullNumber()
-            + " "
-            + this.operator
-            );
-        
-        if (this.evaluated) {
+        if (this.firstNumberObject !== null) {
+            console.log("First number object is not NULL");
+            console.log(this.firstNumberObject);
             windowState = (
                 windowState
+                + this.firstNumberObject.getFullNumber()
                 + " "
-                + this.secondNumber.getFullNumber()
-                + " ="
-            );
+                + this.operator
+                );
+            
+            if (this.evaluated) {
+                windowState = (
+                    windowState
+                    + " "
+                    + this.secondNumberObject.getFullNumber()
+                    + " ="
+                );
+            }
         }
 
         return windowState;
@@ -253,12 +257,16 @@ class BottomWindow {
     }
 
     getWindowState() {
-        return this.currentNumberObject.getFullNumber();
+        if (this.currentNumberObject !== null) {
+            return this.currentNumberObject.getFullNumber();
+        }
+
+        return "";        
     }
 }
 
 // Abstraction of the full window
-class UserWindow {
+ export class UserWindow {
     constructor() {
         // Instantiate the active number
         this.activeNumber = new ScreenNumber();
@@ -331,28 +339,39 @@ class UserWindow {
         Does bottom window have a number?
         Does top window have 0 / 1 / 2 numbers?
         */
+
+        // console.log(operatorString);
+
+        console.log("First is set: " + this.isFirstSet());
+        console.log("Second is set: " + this.isSecondSet());
+        console.log("Current is set: " + this.isCurrent());
        
         if (this.isCurrent() && (!this.isFirstSet() && !this.isSecondSet())) {
             // Apply operation to un-executed calculation
+            console.log("Apply to an un-eval'd calc.");
             
             // Send current number to the topWindow
-            this.topWindow.setFirstNumber(this.currentNumberObject);
+            this.topWindow.setFirstNumber(this.activeNumber);
+            console.log("Top Window first number set - appaz");
+            console.log(this.topWindow.getWindowState());
 
             // Send current operation to the topWindow
             this.topWindow.setOperator(operatorString);
 
             // Build a new currentObject number
-            this.currentNumberObject = new ScreenNumber();
+            this.activeNumber = new ScreenNumber();
 
             // Build a new bottomWindow object
             this.bottomWindow = new BottomWindow();
         } else if (!this.isCurrent() && this.isFirstSet() && !this.isSecondSet()) {
             // Update operation for unexecuted calculation
+            console.log("Update an un-eval'd calc.");
 
             // Send current operation to the topWindow
             this.topWindow.setOperator(operatorString);
         } else if (this.isCurrent() && this.isFirstSet() && !this.isSecondSet()) {
             // Carry out set calculation, update with new input
+            console.log("Carry out calc, apply new one.");
 
             // Build calculation object with currentNum & firstNum
             let calcObject = this.buildCalcObject(this.topWindow, this.bottomWindow);
@@ -373,6 +392,7 @@ class UserWindow {
         } else if (this.isCurrent() && this.isFirstSet() && this.isSecondSet()) {
             // Top window has the full summary
             // Bottom window has the result
+            console.log("Applying an op to a result value");
 
             // Build a new topWindow
             this.topWindow = new TopWindow();
