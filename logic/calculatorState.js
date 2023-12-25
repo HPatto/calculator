@@ -268,8 +268,30 @@ class UserWindow {
         this.bottomWindow = new BottomWindow();
     }
 
-    determineUpdate(arrayOfStrings) {
+    determineUpdate(typeClicked, elementClicked) {
         // Which update function to run?
+
+        // If string does not need clarification, call the function
+        if (typeClicked === "decimal") {
+            this.addDecimal();
+        } else if (typeClicked === "signage") {
+            this.flipSign();
+        } else if (typeClicked === "clearall") {
+            this.resetCalc();
+        } else if (typeClicked === "backspace") {
+            this.deleteChar();
+        } else if (typeClicked === "numeral") {
+            let elementChar = this.getElementChar(elementClicked);
+            this.addNumeral(elementChar);
+        } else if (typeClicked === "operator") {
+            let elementChar = this.getElementChar(elementClicked);
+            if (elementChar === "=") {
+                this.applyEquals();
+            } else {
+                this.applyOperator(elementChar);
+            }
+        }
+        
     }
 
     // Update current number as appropriate with numeral
@@ -362,6 +384,16 @@ class UserWindow {
             this.bottomWindow = new BottomWindow();
             this.activeNumber = new ScreenNumber();
         }
+    }
+
+    // Reset the calculator to the default state
+    resetCalc() {
+        // Instantiate the active number
+        this.activeNumber = new ScreenNumber();
+
+        // Instantiate the window objects
+        this.topWindow = new TopWindow();
+        this.bottomWindow = new BottomWindow();
     }
 
     // Apply the equals operator.
@@ -478,14 +510,9 @@ class UserWindow {
         })
     }
 
-    // Reset the calculator to the default state
-    resetCalc() {
-        // Instantiate the active number
-        this.activeNumber = new ScreenNumber();
-
-        // Instantiate the window objects
-        this.topWindow = new TopWindow();
-        this.bottomWindow = new BottomWindow();
+    // Get the character stored within an element
+    getElementChar(element) {
+        return element.textContent;
     }
 
     // Update status of the bottom window with current number

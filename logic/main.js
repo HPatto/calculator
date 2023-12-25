@@ -15,13 +15,8 @@ import {
 
 /* TO-DO LIST
 I'm sure there's a better way to do it, but for now, it's a list here.
-- The following functions rely on a backend that does not exist.
--- updateCalculatorState()
--- newLowerWindow()
--- newUpperWindow()
--- newAllowedActions()
+-- Check all imports and functions being passed around.
 
-Happy with the structure of this so far.
 */
 
 // Constants
@@ -32,38 +27,17 @@ const operator = 'operator';
 const clearall = 'clearall';
 const backspace = 'backspace';
 
-// Actions allowed within the button pad.
-class AllowedActions {
-    constructor(object) {
-        this.allowedActions = object;
-    }
-
-    getState() {
-        return this.allowedActions;
-    }
-
-    setState(object) {
-        this.allowedActions = object;
-    }
-}
-
 // Update the content of the calculator windows.
-function updateDisplay(event, actionObject, bottomWindow, topWindow) {
+function updateDisplay(event, bottomWindow, topWindow, calculatorObject) {
     /*
     Called upon each event registered on the parent element.
     General logic flow is as follows:
 
     1. Take the event. (DONE)
     2. Determine the button clicked. (DONE)
-    3. Get the allowed functions (DONE).
-    I'd like this to be an object with button classes as keys,
-    and a boolean value on if they are allowed.
-
-    4. Get which button clicks are allowed.
-    5. If button clicked is allowed, process request.
+    3. Process request. (DONE)
     ...
-    n-2. Receieve updated text content for the windows.
-    n-1. Set which functions are allowed to occur.
+    n-1. Receieve updated text content for the windows.
     n. Update the content of the windows.
     */
 
@@ -72,36 +46,17 @@ function updateDisplay(event, actionObject, bottomWindow, topWindow) {
     
     // What button was clicked?
     let typeClicked = determineButtonPressed(clickedElement);
-    
-    // What buttons are currently valid inputs?
-    let validButtons = getAllowedActions(actionObject);
-
-    // Is the button allowed?
-    let isButtonClickValid = validButtons[typeClicked];
-
-    // If disallowed, return a warning value and do nothing.
-    if (!isButtonClickValid) {
-        // Not sure about best practice here. Feels neater than putting
-        // everything inside a if(true) loop.
-        return -1;
-    }
 
     // Pass off information to allow updates.
-    // updateCalculatorState(clickedElement, typeClicked);
+    updateCalculatorState(calculatorObject, clickedElement, typeClicked);
 
     // Get back new window content. Make a call to the state object.
-    let newLowerWindow = false;
-    let newUpperWindow = false;
-
-    // Get updated status of permitted buttons.
-    let newAllowedActions = false;
-
-    // Update the allowed actions
-    // setAllowedActions(newAllowedActions);
+    let newLowerWindow = calculatorObject.getBottomWindowState();
+    let newUpperWindow = calculatorObject.getTopWindowState();
 
     // Update the display
-    // setContent(bottomWindow, newLowerWindow);
-    // setContent(topWindow, newUpperWindow);
+    setContent(bottomWindow, newLowerWindow);
+    setContent(topWindow, newUpperWindow);
 }
 
 // Determine type of button pressed by the user.
@@ -134,18 +89,9 @@ function determineButtonPressed(element) {
     // If the click was anything else, take no action.
 }
 
-// Get allowed actions based on current (prior to button push) state
-function getAllowedActions(actionsObject) {
-    // Call a function inside the userWindow class that returns
-    // an object with the button values and a boolean.
-    return actionsObject.getState();
-}
-
-// Set allowed actions based on current (after last button push) state
-// Remove the export when testing is concluded.
- export function setAllowedActions(actionsObject, newStatus) {
-    // Vibe.
-    actionsObject.setState(newStatus);
+// Update the calculator
+function updateCalculatorState(calcObject, element, typeClicked) {
+    calcObject.determineUpdate(typeClicked, element);
 }
 
 // Set the text content of an element.
@@ -153,29 +99,13 @@ function setContent(element, stringContent) {
     element.textContent = stringContent;
 }
 
-// Initializes all the code upon start-up.
-function initialize() {
-    // What should the initial state of permissions be?
-    let initialActions = {
-        numeral: true,
-        decimal: true,
-        signage: false,
-        operator: false,
-        clearall: true,
-        backspace: true,
-    }
-
-    return initialActions;
-}
-
-
 // Wait until DOM loaded till it is accessible
 document.addEventListener('DOMContentLoaded', function() {
 
     // ########## Code that runs ##########
 
-    // Object holding allowed actions for the session
-    let currentlyAllowedActions = new AllowedActions(initialize());
+    // Object representing the user window
+    let userWindow = new UserWindow();
 
     // Get the objects corresponding to the lower and upper windows
     let lowerWindow = document.querySelector("#lower-window");
@@ -183,22 +113,9 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Get the object corresponding to the calculator
     let calculator = document.querySelector('.container');
-
-    // TESTING ELEMENTS
-    let allTrue = document.querySelector('#alltrue');
-    let allFalse = document.querySelector('#allfalse');
-
-    allTrue.addEventListener('click', function () {
-        setAllToTrue(currentlyAllowedActions);
-    });
-
-    allFalse.addEventListener('click', function () {
-        setAllToFalse(currentlyAllowedActions);
-    });
     
     // Event listener for a button clicked in the calculator
     calculator.addEventListener('click', function(event) {
-        updateDisplay(event, currentlyAllowedActions,
-        lowerWindow, upperWindow)
+        updateDisplay(event, lowerWindow, upperWindow, userWindow)
     });
 });
