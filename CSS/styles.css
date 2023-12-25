@@ -18,21 +18,25 @@
 .calculator {
     display: flex;
     flex-direction: column;
+
+    height: 300px;
     border: 2px solid black;
 }
 
 .windows {
     display: flex;
     flex-direction: column;
+
+    flex: 1 0 auto;
 }
 
 /* We want the text aligned to the RHS */
 
 .upper-window {
-    font-size: 16px;
+    font-size: 20px;
     text-align: right;
     background-color: aquamarine;
-    width: 28em;
+    width: 26em;
 }
 
 .lower-window {
@@ -40,9 +44,12 @@
     text-align: right;
     background-color: rgb(196, 156, 233);
 }
+
 .buttons {
     display: flex;
     flex-direction: column;
+
+    flex: 3 0 auto;
 }
 
 .upper-buttons,
