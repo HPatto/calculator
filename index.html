@@ -9,24 +9,56 @@
     <title>Calculator</title>
 </head>
 <body>
-    <p>Some basic testing</p>
     <div class="container">
-        <button class="numeral">1</button>
-        <button class="numeral">1</button>
-        <button class="numeral">1</button>
-        <button class="numeral">1</button>
-        <button class="decimal">.</button>
-        <button class="signage">+/-</button>
-        <button class="operator">+</button>
-        <button class="operator">*</button>
-        <button class="clearall">AC</button>
-        <button class="backspace">Delete me</button>
+        <div class="calculator">
+            <div class="windows">
+                <div class="upper-window">
+                    -123456789012.345678901 + -123456789012.345678901 = 
+                </div>
+                <div class="lower-window">-123456789012.345678901</div>
+            </div>
+            <div class="buttons">
+                <div class="upper-buttons">
+                    <div class="reset-button">
+                        <button class="clearall">AC</button>
+                    </div>
+                    <div class="equals-button">
+                        <button class="operator">=</button>
+                    </div>
+                </div>
+                <div class="lower-buttons">
+                    <div class="grid">
+                        <div class="grid-row">
+                            <button class="numeral">1</button>
+                            <button class="numeral">2</button>
+                            <button class="numeral">3</button>
+                            <button class="operator">+</button>
+                        </div>
+                        <div class="grid-row">
+                            <button class="numeral">4</button>
+                            <button class="numeral">5</button>
+                            <button class="numeral">6</button>
+                            <button class="operator">-</button>
+                        </div>
+                        <div class="grid-row">
+                            <button class="numeral">7</button>
+                            <button class="numeral">8</button>
+                            <button class="numeral">9</button>
+                            <button class="operator">*</button>
+                        </div>
+                        <div class="grid-row">
+                            <button class="signage">+/-</button>
+                            <button class="numeral">0</button>
+                            <button class="decimal">.</button>
+                            <button class="operator">/</button>
+                        </div>
+                    </div>
+                    <div class=delete-button>
+                        <button class="backspace">DEL</button>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
-
-    <div class="testing-stuff">
-        <button id="alltrue">Set all to TRUE</button>
-        <button id="allfalse">Set all to FALSE</button>
-    </div>
-    
 </body>
 </html>

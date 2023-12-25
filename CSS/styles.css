@@ -2,8 +2,8 @@
 
 .container {
     display: flex;
-    padding: 100px;
-    gap: 30px;
+    justify-content: center;
+    padding: 40px;
 }
 
 .numeral,
@@ -13,4 +13,63 @@
 .clearall,
 .backspace {
     flex: 1;
+}
+
+.calculator {
+    display: flex;
+    flex-direction: column;
+    border: 2px solid black;
+}
+
+.windows {
+    display: flex;
+    flex-direction: column;
+}
+
+/* We want the text aligned to the RHS */
+
+.upper-window {
+    font-size: 12px;
+    text-align: right;
+    background-color: aquamarine;
+    width: 28em;
+}
+
+.lower-window {
+    font-size: 24px;
+    text-align: right;
+    background-color: rgb(196, 156, 233);
+}
+.buttons {
+    display: flex;
+    flex-direction: column;
+}
+
+.upper-buttons,
+.lower-buttons {
+    display: flex;
+    flex-direction: row;
+    flex: 1;
+}
+
+.reset-button,
+.equals-button {
+    display: flex;
+    flex: 1;
+}
+
+.grid {
+    display: flex;
+    flex-direction: column;
+    flex: 4 0 auto;
+}
+
+.delete-button {
+    flex: 1 0 auto;
+    display: flex;
+}
+
+.grid-row {
+    display: flex;
+    flex-direction: row;
 }
