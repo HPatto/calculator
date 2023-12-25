@@ -3,6 +3,29 @@ Collection of the classes and functions facilitating the updates to
 the calculator.
 */
 
+// Abstraction of the computation object, to be passed for calcs
+class CalculationObject {
+    constructor(firstNumber, operator, secondNumber) {
+        this.firstNumber = null;
+        this.operator = null;
+        this.secondNumber = null;
+    }
+
+    getState() {
+        return (
+            this.firstNumber, 
+            this.operator,
+            this.secondNumber
+        );
+    }
+
+    setState(firstObj, op, secondObj) {
+        this.firstNumber = firstObj;
+        this.operator = op;
+        this.secondNumber = secondObj;
+    }
+}
+
 // Abstraction of the inputted user numbers
 class ScreenNumber {
     constructor() {
@@ -124,8 +147,25 @@ class ScreenNumber {
 
         return fullNumber;
     }
+
+    // Get the int string
+    getIntString() {
+        return this.intDigits;
+    }
+
+    // Get the decimal string
+    getDecimalString() {
+        return this.decimalDigits;
+    }
+
+    // Get the decimal status
+    getDecimalStatus() {
+        return this.hasDecimal;
+    }
+
 }
 
+// Abstraction of the top window
 class TopWindow {
     constructor() {
         this.firstNumberObject = null;
@@ -134,12 +174,24 @@ class TopWindow {
         this.evaluated = false;
     }
 
+    getFirstNumber() {
+        return this.firstNumberObject;
+    }
+
     setFirstNumber(screenNumberObject) {
         this.firstNumberObject = screenNumberObject.getFullNumber();
     }
 
+    getSecondNumber() {
+        return this.secondNumberObject;
+    }
+
     setSecondNumber(screenNumberObject) {
         this.secondNumberObject = screenNumberObject.getFullNumber();
+    }
+
+    getOperator() {
+        return this.operator;
     }
 
     setOperator(operatorString) {
@@ -178,9 +230,14 @@ class TopWindow {
 
 }
 
+// Abstraction of the bottom window
 class BottomWindow {
     constructor() {
         this.currentNumberObject = null;
+    }
+
+    getCurrentNumber() {
+        return this.currentNumberObject;
     }
 
     setCurrentNumber(screenNumberObject) {
@@ -196,6 +253,7 @@ class BottomWindow {
     }
 }
 
+// Abstraction of the full window
 class UserWindow {
     constructor() {
         // Instantiate the active number
@@ -234,7 +292,7 @@ class UserWindow {
         this.updateBottomWindow();
     }
 
-    // 
+    // Apply the chosen operator. Variety of outcomes possible
     applyOperator(operatorString) {
         /*
         Considerations:
@@ -252,12 +310,105 @@ class UserWindow {
         let isSecondSet = this.topWindow.holdsSecondNumber();
         let isCurrent = this.bottomWindow.holdsCurrentNumber();
 
+        
+        if (isCurrent && (!isFirstSet && !isSecondSet)) {
+            // Apply operation to un-executed calculation
+            
+            // Send current number to the topWindow
+            this.topWindow.setFirstNumber(this.currentNumberObject);
+
+            // Send current operation to the topWindow
+            this.topWindow.setOperator(operatorString);
+
+            // Build a new currentObject number
+            this.currentNumberObject = new ScreenNumber();
+
+            // Build a new bottomWindow object
+            this.bottomWindow = new BottomWindow();
+        } else if (!isCurrent && isFirstSet && !isSecondSet) {
+            // Update operation for unexecuted calculation
+
+            // Send current operation to the topWindow
+            this.topWindow.setOperator(operatorString);
+        } else if (isCurrent && isFirstSet && !isSecondSet) {
+            // Carry out set calculation, update with new input
+
+            // Build calculation object with currentNum & firstNum
+            let calculationObject = new CalculationObject(
+                this.topWindow.getFirstNumber(),
+                this.topWindow.getOperator(),
+                this.bottomWindow.getCurrentNumber()
+            );
+
+            // Get the result of the calculation
+            let resultNumber = calculate(calculationObject);
+
+            // Create new topWindow
+            this.topWindow = new TopWindow();
+
+            // Populate it with data
+            this.topWindow.setFirstNumber(resultNumber);
+            this.topWindow.setOperator(operatorString);
+
+            // Create new bottomWindow & currentNumber
+            this.bottomWindow = new BottomWindow();
+            this.activeNumber = new ScreenNumber();
+        } else if (isCurrent && isFirstSet && isSecondSet) {
+            // Top window has the full summary
+            // Bottom window has the result
+
+            // Build a new topWindow
+            this.topWindow = new TopWindow();
+
+            // Update the top window with the result
+            this.topWindow.setFirstNumber(this.bottomWindow.getCurrentNumber());
+
+            // Build a new bottomWindow and currentNumber
+            this.bottomWindow = new BottomWindow();
+            this.activeNumber = new ScreenNumber();
+        }
+
 
 
     }
 
-    evaluateCalc() {
+    // Evaluate the calculation
+    evaluateCalc(calcObject) {
         // If allowed, carry out the calculation.
+    }
+
+    isDivideByZero(calcObject) {
+        let [op, value] = calcObject.getState().slice(1);
+
+        // if (op === "/" && value === "0")
+
+    }
+
+    isZero(numberObject) {
+        // Is the int portion only zeroes?
+        // Is there a decimal portion?
+        // Is the decimal portion only zeroes?
+
+        if (!(this.hasOnlyZeroes(numberObject.getIntString))) {
+            return false;
+        }
+
+        if (numberObject.getDecimalStatus()) {
+            if (!(this.hasOnlyZeroes(numberObject.getDecimalString))) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    hasOnlyZeroes(digitString) {
+        let digitArray = digitString.split("");
+
+        return digitArray.every(function(digit) {
+            let num = parseInt(digit);
+            return (num === 0);
+        })
     }
 
     // Reset the calculator to the default state
