@@ -3,6 +3,9 @@ Collection of the classes and functions facilitating the updates to
 the calculator.
 */
 
+// Imports
+import { calculate } from "./calculatorEngine";
+
 // Abstraction of the computation object, to be passed for calcs
 class CalculationObject {
     constructor(firstNumber, operator, secondNumber) {
@@ -12,11 +15,11 @@ class CalculationObject {
     }
 
     getState() {
-        return (
+        return [
             this.firstNumber, 
             this.operator,
             this.secondNumber
-        );
+        ];
     }
 
     setState(firstObj, op, secondObj) {
@@ -27,7 +30,7 @@ class CalculationObject {
 }
 
 // Abstraction of the inputted user numbers
-class ScreenNumber {
+export class ScreenNumber {
     constructor() {
         this.intDigits = "";
         this.decimalDigits = "";
@@ -163,6 +166,13 @@ class ScreenNumber {
         return this.hasDecimal;
     }
 
+    setIntDigits(intString) {
+        this.intDigits = intString;
+    }
+
+    setDecimalDigits(decimalString) {
+        this.decimalDigits = decimalString;
+    }
 }
 
 // Abstraction of the top window
@@ -235,7 +245,6 @@ class TopWindow {
 
         return windowState;
     }
-
 }
 
 // Abstraction of the bottom window
