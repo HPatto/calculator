@@ -5,7 +5,7 @@ Ensure the state of the return number contained the valid flags.
 */
 
 // Imports
-import { ScreenNumber } from "./calculatorState";
+import { ScreenNumber } from "./calculatorState.js";
 
 // Constants
 const MAX_VALUE = 999999999999.999999999;
@@ -49,14 +49,14 @@ export function calculate(calculationObject) {
         firstNum,
         maxDecimals,
         firstHasDecimals,
-        numOfDecimals = firstDecimalCount
+        firstDecimalCount
     );
     
     let secondCalcNumber = constructCalcNumber(
         secondNum,
         maxDecimals,
         secondHasDecimals,
-        numOfDecimals = secondDecimalCount
+        secondDecimalCount
     );
 
     let calcResult;
@@ -78,12 +78,12 @@ export function calculate(calculationObject) {
 
 // Function to convert a BigInt result to a ScreenNumber object
 function convertResult(bigIntValue, numDecimals) {
-    let adjustedResult = bigIntValue / (10 ** numDecimals);
+    let adjustedResult = bigIntValue / BigInt((10 ** numDecimals));
 
     if (adjustedResult > MAX_VALUE) {
-        let adjustedResult = MAX_VALUE;
+        adjustedResult = MAX_VALUE;
     } else if (adjustedResult < MIN_VALUE) {
-        let adjustedResult = MIN_VALUE;
+        adjustedResult = MIN_VALUE;
     }
 
     let isPositive = !(adjustedResult < 0);
@@ -139,7 +139,7 @@ function constructCalcNumber (
         let intPart = constructInput(intString);
 
         if(!hasDecimals) {
-            return (intPart * (10 ** maxDecimalsInCalc));
+            return (intPart * BigInt((10 ** maxDecimalsInCalc)));
         }
         
         let decimalString = numberObject.getDecimalString();
@@ -148,13 +148,13 @@ function constructCalcNumber (
         if (numOfDecimals === maxDecimalsInCalc) {
             return (intPart + decPart);
         } else {
-            return (intPart + (decPart * (10 ** (maxDecimalsInCalc - numOfDecimals))));
+            return (intPart + (decPart * BigInt((10 ** (maxDecimalsInCalc - numOfDecimals)))));
         }
 }
 
 // Convert a string of digits to BigInt format. 
 function constructInput(givenString) {
-    let givenInput = new BigInt(givenString);
+    let givenInput = BigInt(givenString);
     return givenInput;
 }
 

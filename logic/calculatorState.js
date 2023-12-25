@@ -4,14 +4,14 @@ the calculator.
 */
 
 // Imports
-import { calculate } from "./calculatorEngine";
+import { calculate } from "./calculatorEngine.js";
 
 // Abstraction of the computation object, to be passed for calcs
 class CalculationObject {
     constructor(firstNumber, operator, secondNumber) {
-        this.firstNumber = null;
-        this.operator = null;
-        this.secondNumber = null;
+        this.firstNumber = firstNumber;
+        this.operator = operator;
+        this.secondNumber = secondNumber;
     }
 
     getState() {
