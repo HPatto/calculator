@@ -10,7 +10,7 @@ import { ScreenNumber } from "./calculatorState.js";
 // Constants
 const MAX_INT_VALUE = 999999999999;
 const MIN_INT_VALUE = -999999999999;
-const MAX_DEC_VALUE = 0.999999999;
+const MAX_DEC_VALUE = 999999999;
 
 class CalculationNumber {
     constructor (screenNumber) {
@@ -55,7 +55,8 @@ class CalculationNumber {
     adjustForOther(otherDecimalCount) {
         this.delta = otherDecimalCount - this.decimalCount;
         if (this.delta > 0) {
-            this.adjustIntermediateProperties(this.overallAdjuster(this.delta));            
+            this.adjustIntermediateProperties(this.overallAdjuster(this.delta));      
+            this.calcNumberBig = this.setCalculationNumber();      
         }
     }
 
@@ -72,7 +73,7 @@ class CalculationNumber {
 
     setDecimalIntermediateNumber () {
         let decimalScreenBig = BigInt(this.screenNumber.getDecimalString());
-        decimalScreenBig  = decimalScreenBig * this.individualAdjuster();
+        // decimalScreenBig  = decimalScreenBig * this.individualAdjuster();
         return decimalScreenBig;
     }
 
@@ -125,12 +126,20 @@ export function calculate(calculationObject) {
 
     // Set the number of decimals expected
     let decimalsInResult = decimalsRequired(firstCalc, secondCalc, op);
+    console.log("decimalsRequired:");
+    console.log(decimalsInResult);
 
     // Initialize variable to hold sign for product operations
     let resultIsPositive;
 
     // Initialize variable to hold BigInt calculation result.
     let calcResult;
+
+    // Testing
+    console.log("First num obj:");
+    console.log(firstCalc);
+    console.log("Second num obj:");
+    console.log(secondCalc);
 
     // Send the objects off to be calculated
     if (op === "+") {
@@ -182,6 +191,9 @@ export function calculate(calculationObject) {
 // Function to convert a BigInt value + other parameters
 // to a ScreenNumber object for return.
 function convertResult(bigIntValue, numDecimals, operation, positive) {
+    console.log("This was numDecimals value passed in:");
+    console.log(numDecimals);
+
     if (operation === "+" || operation === "-") {
         return convertLinear(bigIntValue, numDecimals);
     } else {
@@ -194,6 +206,28 @@ function convertLinear(bigIntValue, numDecimals) {
     let decimalString = resultString.slice(resultString.length - numDecimals);
     let intString = resultString.slice(0, resultString.length - numDecimals);
 
+    console.log("This is numDecimals in convertLinear result");
+    console.log(numDecimals);
+
+    console.log("This is length of resultString");
+    console.log(resultString.length);
+
+    let decimalsFound = decimalString.length;
+    let needToAddZeroes = (decimalsFound < numDecimals);
+
+    if (needToAddZeroes) {
+        let decimalsToAdd = numDecimals - decimalsFound;
+        let extraString = "";
+
+        for (let i = 0; i < decimalsToAdd; i++) {
+            extraString = extraString.concat("0");
+        }
+        decimalString = extraString + decimalString;
+    }
+
+    // console.log("This is the number of decimals expected");
+    // console.log(numDecimals);
+
     let intValue = parseInt(intString);
 
     let isPositive = !(intValue < 0);
@@ -202,10 +236,18 @@ function convertLinear(bigIntValue, numDecimals) {
     if (intValue > MAX_INT_VALUE) {
         intString = "" + MAX_INT_VALUE;
         decimalString = "" + MAX_DEC_VALUE;
+        hasDecimals = true;
     } else if (intValue < MIN_INT_VALUE) {
         intString = "" + MIN_INT_VALUE;
         decimalString = "" + MAX_DEC_VALUE;
+        hasDecimals = true;
     }
+
+    console.log("This is the intstring checked result");
+    console.log(intString);
+
+    console.log("This is the decstring checked result");
+    console.log(decimalString);
 
     let resultObject = new ScreenNumber();
 
@@ -232,6 +274,9 @@ function convertProduct(bigIntValue, numDecimals, isPositive) {
     let decimalString = resultString.slice(resultString.length - numDecimals);
     let intString = resultString.slice(0, resultString.length - numDecimals);
 
+    console.log("This is the un-checked result");
+    console.log(resultString);
+
     let intValue = parseInt(intString);
 
     let hasDecimals = (numDecimals > 0);
@@ -239,9 +284,11 @@ function convertProduct(bigIntValue, numDecimals, isPositive) {
     if (intValue > MAX_INT_VALUE) {
         intString = "" + MAX_INT_VALUE;
         decimalString = "" + MAX_DEC_VALUE;
+        hasDecimals = true;
     } else if (intValue < MIN_INT_VALUE) {
         intString = "" + MIN_INT_VALUE;
         decimalString = "" + MAX_DEC_VALUE;
+        hasDecimals = true;
     }
 
     let resultObject = new ScreenNumber();
@@ -261,6 +308,10 @@ function convertProduct(bigIntValue, numDecimals, isPositive) {
 }
 
 function add(firstNum, secondNum) {
+    console.log("This is the first number:");
+    console.log(firstNum.getCalculationNumber())
+    console.log("This is the second number:");
+    console.log(secondNum.getCalculationNumber())
     return (
         firstNum.getCalculationNumber() +
         secondNum.getCalculationNumber()
@@ -268,6 +319,10 @@ function add(firstNum, secondNum) {
 }
 
 function subtract(firstNum, secondNum) {
+    console.log("This is the first number:");
+    console.log(firstNum.getCalculationNumber())
+    console.log("This is the second number:");
+    console.log(secondNum.getCalculationNumber())
     return (
         firstNum.getCalculationNumber() -
         secondNum.getCalculationNumber()
@@ -304,6 +359,13 @@ function finalSignPositive(firstCalcNumber, secondCalcNumber) {
 function decimalsRequired(firstObj, secondObj, operation) {
     let firstCount = firstObj.getDecimalCount();
     let secondCount = secondObj.getDecimalCount();
+
+    console.log("First number has the following quantity:");
+    console.log(firstCount);
+
+    console.log("Second number has the following quantity:");
+    console.log(secondCount);
+
     if (operation === "+" || operation === "-") {
         return Math.max(firstCount, secondCount);
     } else if (operation === "*") {
