@@ -166,12 +166,19 @@ export class ScreenNumber {
         return this.hasDecimal;
     }
 
+    // Used to set the results obtained from the calculation
     setIntDigits(intString) {
         this.intDigits = intString;
     }
 
+    // Used to set the results obtained from the calculation
     setDecimalDigits(decimalString) {
         this.decimalDigits = decimalString;
+    }
+
+    // Check if stored object is positive
+    getPositive() {
+        return this.isPositive;
     }
 }
 
