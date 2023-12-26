@@ -62,8 +62,6 @@ class CalculationNumber {
     setIntIntermediateNumber () {
         let intScreenBig = BigInt(this.screenNumber.getIntString());
         intScreenBig = intScreenBig * this.individualAdjuster();
-        console.log(intScreenBig)
-        // this.intIntermediateNumberBig = intScreenBig;
         return intScreenBig;
     }
 
@@ -75,7 +73,6 @@ class CalculationNumber {
     setDecimalIntermediateNumber () {
         let decimalScreenBig = BigInt(this.screenNumber.getDecimalString());
         decimalScreenBig  = decimalScreenBig * this.individualAdjuster();
-        // this.decimalIntermediateNumberBig = decimalScreenBig;
         return decimalScreenBig;
     }
 
@@ -96,6 +93,9 @@ class CalculationNumber {
         return this.calcNumberBig;
     }
 
+    getPositive() {
+        return this.isPositive;
+    }
 }
 
 export function calculate(calculationObject) {
@@ -118,8 +118,6 @@ export function calculate(calculationObject) {
     // Initialize the objects to hold the calc numbers
     let firstCalc = new CalculationNumber(firstNum);
     let secondCalc = new CalculationNumber(secondNum);
-
-    console.log(firstCalc);
 
     // Adjust to ensure the calculation OoM works
     firstCalc.adjustForOther(secondCalc.getDecimalCount());
@@ -192,13 +190,9 @@ function convertResult(bigIntValue, numDecimals, operation, positive) {
 }
 
 function convertLinear(bigIntValue, numDecimals) {
-
     let resultString = bigIntValue.toString();
     let decimalString = resultString.slice(resultString.length - numDecimals);
     let intString = resultString.slice(0, resultString.length - numDecimals);
-
-    console.log("Full string:");
-    console.log(resultString);
 
     let intValue = parseInt(intString);
 
@@ -230,18 +224,43 @@ function convertLinear(bigIntValue, numDecimals) {
     }
 
     resultObject.setDecimalDigits(decimalString);
-    console.log(resultObject);
-
     return resultObject;
 }
 
 function convertProduct(bigIntValue, numDecimals, isPositive) {
+    let resultString = bigIntValue.toString();
+    let decimalString = resultString.slice(resultString.length - numDecimals);
+    let intString = resultString.slice(0, resultString.length - numDecimals);
 
+    let intValue = parseInt(intString);
+
+    let hasDecimals = (numDecimals > 0);
+    
+    if (intValue > MAX_INT_VALUE) {
+        intString = "" + MAX_INT_VALUE;
+        decimalString = "" + MAX_DEC_VALUE;
+    } else if (intValue < MIN_INT_VALUE) {
+        intString = "" + MIN_INT_VALUE;
+        decimalString = "" + MAX_DEC_VALUE;
+    }
+
+    let resultObject = new ScreenNumber();
+
+    resultObject.setIntDigits(intString);
+
+    if (!isPositive) {
+        resultObject.changeSign();
+    }
+
+    if (hasDecimals) {
+        resultObject.addDecimal();
+    }
+
+    resultObject.setDecimalDigits(decimalString);
+    return resultObject;
 }
 
 function add(firstNum, secondNum) {
-    console.log('First big number');
-    console.log(firstNum.getCalculationNumber());
     return (
         firstNum.getCalculationNumber() +
         secondNum.getCalculationNumber()
