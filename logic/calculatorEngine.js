@@ -22,7 +22,7 @@ class CalculationNumber {
         this.isPositive = screenNumber.getPositive();
 
         // Figures related to input number
-        this.decimalCount =  numberOfDecimalPlaces(screenNumber.getDecimalString)
+        this.decimalCount =  this.numberOfDecimalPlaces(screenNumber.getDecimalString())
         
         // BigInt representation of ScreenNumber input
         this.intIntermediateNumberBig = this.setIntIntermediateNumber();
@@ -62,7 +62,9 @@ class CalculationNumber {
     setIntIntermediateNumber () {
         let intScreenBig = BigInt(this.screenNumber.getIntString());
         intScreenBig = intScreenBig * this.individualAdjuster();
-        this.intIntermediateNumberBig = intScreenBig;
+        console.log(intScreenBig)
+        // this.intIntermediateNumberBig = intScreenBig;
+        return intScreenBig;
     }
 
     adjustIntermediateProperties (adjustBig) {
@@ -73,20 +75,25 @@ class CalculationNumber {
     setDecimalIntermediateNumber () {
         let decimalScreenBig = BigInt(this.screenNumber.getDecimalString());
         decimalScreenBig  = decimalScreenBig * this.individualAdjuster();
-        this.decimalIntermediateNumberBig = decimalScreenBig;
+        // this.decimalIntermediateNumberBig = decimalScreenBig;
+        return decimalScreenBig;
     }
 
     setCalculationNumber () {
-        this.calcNumberBig = (
-            this.intIntermediateNumberBig
-            + this.decimalIntermediateNumberBig
+        return (
+            this.intIntermediateNumberBig +
+            this.decimalIntermediateNumberBig
         );
     }
 
     setSign() {
-        if (!this.isPositive()) {
+        if (!this.isPositive) {
             this.calcNumberBig = this.calcNumberBig * BigInt(-1);
         }
+    }
+
+    getCalculationNumber() {
+        return this.calcNumberBig;
     }
 
 }
@@ -111,6 +118,8 @@ export function calculate(calculationObject) {
     // Initialize the objects to hold the calc numbers
     let firstCalc = new CalculationNumber(firstNum);
     let secondCalc = new CalculationNumber(secondNum);
+
+    console.log(firstCalc);
 
     // Adjust to ensure the calculation OoM works
     firstCalc.adjustForOther(secondCalc.getDecimalCount());
@@ -188,10 +197,13 @@ function convertLinear(bigIntValue, numDecimals) {
     let decimalString = resultString.slice(resultString.length - numDecimals);
     let intString = resultString.slice(0, resultString.length - numDecimals);
 
-    let isPositive = !(intValue < 0);
-    let hasDecimals = (numDecimals > 0);
+    console.log("Full string:");
+    console.log(resultString);
 
     let intValue = parseInt(intString);
+
+    let isPositive = !(intValue < 0);
+    let hasDecimals = (numDecimals > 0);
     
     if (intValue > MAX_INT_VALUE) {
         intString = "" + MAX_INT_VALUE;
@@ -218,6 +230,8 @@ function convertLinear(bigIntValue, numDecimals) {
     }
 
     resultObject.setDecimalDigits(decimalString);
+    console.log(resultObject);
+
     return resultObject;
 }
 
@@ -226,18 +240,26 @@ function convertProduct(bigIntValue, numDecimals, isPositive) {
 }
 
 function add(firstNum, secondNum) {
-    return (firstNum + secondNum);
+    console.log('First big number');
+    console.log(firstNum.getCalculationNumber());
+    return (
+        firstNum.getCalculationNumber() +
+        secondNum.getCalculationNumber()
+        );
 }
 
 function subtract(firstNum, secondNum) {
-    return (firstNum - secondNum);
+    return (
+        firstNum.getCalculationNumber() -
+        secondNum.getCalculationNumber()
+        );
 }
 
-function multiply(firstNum, secondNum, negative) {
-    if (negative) {
-        return (firstNum * secondNum * BigInt(-1));
-    }
-    return (firstNum * secondNum);
+function multiply(firstNum, secondNum) {
+    return (
+        firstNum.getCalculationNumber() *
+        secondNum.getCalculationNumber()
+        );
 }
 
 function divide(firstNum, secondNum, negative) {
@@ -245,8 +267,8 @@ function divide(firstNum, secondNum, negative) {
 }
 
 function adjustSign(firstCalcNumber, secondCalcNumber) {
-    firstCalc.setSign();
-    secondCalc.setSign();
+    firstCalcNumber.setSign();
+    secondCalcNumber.setSign();
 }
 
 function finalSignPositive(firstCalcNumber, secondCalcNumber) {
