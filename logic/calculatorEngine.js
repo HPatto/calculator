@@ -62,7 +62,11 @@ class CalculationNumber {
 
     setIntIntermediateNumber () {
         let intScreenBig = BigInt(this.screenNumber.getIntString());
+        console.log("Set the int_intermediate_num");
+        console.log(intScreenBig);
         intScreenBig = intScreenBig * this.individualAdjuster();
+        console.log("Set the updated int_intermediate_num");
+        console.log(intScreenBig);
         return intScreenBig;
     }
 
@@ -120,14 +124,30 @@ export function calculate(calculationObject) {
     let firstCalc = new CalculationNumber(firstNum);
     let secondCalc = new CalculationNumber(secondNum);
 
+    console.log("Before decimal alteration");
+
+    console.log("First calc:");
+    console.log(firstCalc);
+
+    console.log("Second calc:");
+    console.log(secondCalc);
+
     // Adjust to ensure the calculation OoM works
-    firstCalc.adjustForOther(secondCalc.getDecimalCount());
-    secondCalc.adjustForOther(firstCalc.getDecimalCount());
+    // firstCalc.adjustForOther(secondCalc.getDecimalCount());
+    // secondCalc.adjustForOther(firstCalc.getDecimalCount());
+
+    console.log("After decimal alteration");    
+
+    console.log("First calc:");
+    console.log(firstCalc);
+
+    console.log("Second calc:");
+    console.log(secondCalc);
 
     // Set the number of decimals expected
     let decimalsInResult = decimalsRequired(firstCalc, secondCalc, op);
-    console.log("decimalsRequired:");
-    console.log(decimalsInResult);
+    // console.log("decimalsRequired:");
+    // console.log(decimalsInResult);
 
     // Initialize variable to hold sign for product operations
     let resultIsPositive;
@@ -144,10 +164,16 @@ export function calculate(calculationObject) {
     // Send the objects off to be calculated
     if (op === "+") {
         // Perform the addition on the two inputs
+        // Adjust to ensure the calculation OoM works
+        firstCalc.adjustForOther(secondCalc.getDecimalCount());
+        secondCalc.adjustForOther(firstCalc.getDecimalCount());
         adjustSign(firstCalc, secondCalc);
         calcResult = add(firstCalc, secondCalc);        
     } else if (op === "-") {
         // Perform the subtraction on the two inputs
+        // Adjust to ensure the calculation OoM works
+        firstCalc.adjustForOther(secondCalc.getDecimalCount());
+        secondCalc.adjustForOther(firstCalc.getDecimalCount());
         adjustSign(firstCalc, secondCalc);
         calcResult = subtract(firstCalc, secondCalc);
     } else if (op === "*") {
@@ -156,9 +182,13 @@ export function calculate(calculationObject) {
         calcResult = multiply(firstCalc, secondCalc);
     } else if (op === "/") {
         // Perform the division on the two inputs
+        firstCalc.adjustForOther(secondCalc.getDecimalCount());
+        secondCalc.adjustForOther(firstCalc.getDecimalCount());
         resultIsPositive = finalSignPositive(firstCalc, secondCalc);
-        calcResult = divide(firstCalc, secondCalc);
+        return divide(firstCalc, secondCalc, resultIsPositive);
     }
+    console.log("This is the calc result");
+    console.log(calcResult);
 
     /*
     What do we pass in to calculate the final number?
@@ -336,8 +366,58 @@ function multiply(firstNum, secondNum) {
         );
 }
 
-function divide(firstNum, secondNum, negative) {
-    return (firstNum / secondNum);
+function divide(firstNum, secondNum, isPositive) {
+    // Dividing is === multiplying * (1 / divisor)
+    let quotient = (
+        firstNum.getCalculationNumber() /
+        secondNum.getCalculationNumber()
+    );
+
+    let remainder = (
+        firstNum.getCalculationNumber() %
+        secondNum.getCalculationNumber()
+    );
+
+    let remainderDecimal = (
+        parseFloat(remainder) /
+        parseFloat(secondNum.getCalculationNumber())
+    );
+
+    // Build the parameters for a ScreenNumber object
+    let intString = quotient.toString();
+    let unalteredDecimalString = remainderDecimal.toString();
+    let decimalString = unalteredDecimalString.slice(2, Math.min(
+        unalteredDecimalString.length,
+        11
+    ));
+    // console.log(decimalString);
+
+    let hasDecimals = (decimalString.length > 0);
+
+    if (quotient > MAX_INT_VALUE) {
+        intString = "" + MAX_INT_VALUE;
+        decimalString = "" + MAX_DEC_VALUE;
+        hasDecimals = true;
+    } else if (quotient < MIN_INT_VALUE) {
+        intString = "" + MIN_INT_VALUE;
+        decimalString = "" + MAX_DEC_VALUE;
+        hasDecimals = true;
+    }
+
+    let resultObject = new ScreenNumber();
+
+    resultObject.setIntDigits(intString);
+
+    if (!isPositive) {
+        resultObject.changeSign();
+    }
+
+    if (hasDecimals) {
+        resultObject.addDecimal();
+    }
+
+    resultObject.setDecimalDigits(decimalString);
+    return resultObject;
 }
 
 function adjustSign(firstCalcNumber, secondCalcNumber) {
@@ -360,15 +440,9 @@ function decimalsRequired(firstObj, secondObj, operation) {
     let firstCount = firstObj.getDecimalCount();
     let secondCount = secondObj.getDecimalCount();
 
-    console.log("First number has the following quantity:");
-    console.log(firstCount);
-
-    console.log("Second number has the following quantity:");
-    console.log(secondCount);
-
     if (operation === "+" || operation === "-") {
         return Math.max(firstCount, secondCount);
-    } else if (operation === "*") {
+    } else if (operation === "*" || operation === "/") {
         return (firstCount + secondCount);
     }
 }

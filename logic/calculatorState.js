@@ -523,12 +523,12 @@ class BottomWindow {
         // Is there a decimal portion?
         // Is the decimal portion only zeroes?
 
-        if (!(this.hasOnlyZeroes(numberObject.getIntString))) {
+        if (!(this.hasOnlyZeroes(numberObject.getIntString()))) {
             return false;
         }
 
         if (numberObject.getDecimalStatus()) {
-            if (!(this.hasOnlyZeroes(numberObject.getDecimalString))) {
+            if (!(this.hasOnlyZeroes(numberObject.getDecimalString()))) {
                 return false;
             }
         }
