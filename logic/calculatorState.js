@@ -50,10 +50,6 @@ export class ScreenNumber {
                 this.intDigits = this.intDigits.concat(digitChar);
             }
         }
-        // console.log("Integer part:")
-        // console.log(this.intDigits);
-        // console.log("Decimal part:")
-        // console.log(this.decimalDigits);
     }
 
     // Remove a digit from the digit string.
@@ -94,12 +90,6 @@ export class ScreenNumber {
         // Get total number of digits input.
         let totalDigits = this.digitCount(this.decimalDigits)
                         + this.digitCount(this.intDigits);
-
-        // console.log("Number of current decimal digits:");
-        // console.log(this.digitCount(this.decimalDigits));
-
-        // console.log("Number of current integer digits:");
-        // console.log(this.digitCount(this.intDigits));
 
         return ((totalDigits < this.totalDigitLimit) &&
             (this.digitCount(this.decimalDigits) < this.decimalDigitLimit));
@@ -231,8 +221,6 @@ class TopWindow {
         let windowState = "";
 
         if (this.firstNumberObject !== null) {
-            // console.log("First number object is not NULL");
-            // console.log(this.firstNumberObject);
             windowState = (
                 windowState
                 + this.firstNumberObject.getFullNumber()
@@ -355,20 +343,12 @@ class BottomWindow {
         Does bottom window have a number?
         Does top window have 0 / 1 / 2 numbers?
         */
-
-        // console.log(operatorString);
-        // console.log("First is set: " + this.isFirstSet());
-        // console.log("Second is set: " + this.isSecondSet());
-        // console.log("Current is set: " + this.isCurrent());
        
         if (this.isCurrent() && (!this.isFirstSet() && !this.isSecondSet())) {
             // Apply operation to un-executed calculation
-            console.log("Apply to an un-eval'd calc.");
             
             // Send current number to the topWindow
             this.topWindow.setFirstNumber(this.activeNumber);
-            // console.log("Top Window first number set - appaz");
-            // console.log(this.topWindow.getWindowState());
 
             // Send current operation to the topWindow
             this.topWindow.setOperator(operatorString);
@@ -380,13 +360,11 @@ class BottomWindow {
             this.bottomWindow = new BottomWindow();
         } else if (!this.isCurrent() && this.isFirstSet() && !this.isSecondSet()) {
             // Update operation for unexecuted calculation
-            console.log("Update an un-eval'd calc.");
 
             // Send current operation to the topWindow
             this.topWindow.setOperator(operatorString);
         } else if (this.isCurrent() && this.isFirstSet() && !this.isSecondSet()) {
             // Carry out set calculation, update with new input
-            console.log("Carry out calc, apply new one.");
 
             // Build calculation object with currentNum & firstNum
             let calcObject = this.buildCalcObject(this.topWindow, this.bottomWindow);
@@ -407,7 +385,6 @@ class BottomWindow {
         } else if (this.isCurrent() && this.isFirstSet() && this.isSecondSet()) {
             // Top window has the full summary
             // Bottom window has the result
-            console.log("Applying an op to a result value");
 
             // Build a new topWindow
             this.topWindow = new TopWindow();
