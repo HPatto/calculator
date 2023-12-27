@@ -372,16 +372,18 @@ class BottomWindow {
             // Get the result of the calculation
             let resultNumber = this.evaluateCalc(calcObject);
 
-            // Create new topWindow
-            this.topWindow = new TopWindow();
+            if (resultNumber !== -1) {
+                // Create new topWindow
+                this.topWindow = new TopWindow();
 
-            // Populate it with data
-            this.topWindow.setFirstNumber(resultNumber);
-            this.topWindow.setOperator(operatorString);
+                // Populate it with data
+                this.topWindow.setFirstNumber(resultNumber);
+                this.topWindow.setOperator(operatorString);
 
-            // Create new bottomWindow & currentNumber
-            this.bottomWindow = new BottomWindow();
-            this.activeNumber = new ScreenNumber();
+                // Create new bottomWindow & currentNumber
+                this.bottomWindow = new BottomWindow();
+                this.activeNumber = new ScreenNumber();
+            }
         } else if (this.isCurrent() && this.isFirstSet() && this.isSecondSet()) {
             // Top window has the full summary
             // Bottom window has the result
@@ -424,16 +426,19 @@ class BottomWindow {
             // Get the result
             let result = this.evaluateCalc(calcObject);
 
-            // Update the top window
-            this.topWindow.setSecondNumber(this.bottomWindow.getCurrentNumber());
-            this.topWindow.setEvaluated();
+            if (result !== -1) {
+                // Update the top window
+                this.topWindow.setSecondNumber(this.bottomWindow.getCurrentNumber());
+                this.topWindow.setEvaluated();
 
-            // Assign new currentNumber and bottomWindow
-            this.activeNumber = result;
-            this.bottomWindow = new BottomWindow();
+                // Assign new currentNumber and bottomWindow
+                this.activeNumber = result;
+                this.bottomWindow = new BottomWindow();
 
-            // Update the bottom window
-            this.updateBottomWindow();
+                // Update the bottom window
+                this.updateBottomWindow();
+
+            }
         }
     }
 
@@ -441,9 +446,9 @@ class BottomWindow {
     buildCalcObject(topWindow, bottomWindow) {
         // Build calculation object with currentNum & firstNum
         let calculationObject = new CalculationObject(
-            this.topWindow.getFirstNumber(),
-            this.topWindow.getOperator(),
-            this.bottomWindow.getCurrentNumber()
+            topWindow.getFirstNumber(),
+            topWindow.getOperator(),
+            bottomWindow.getCurrentNumber()
         );
 
         return calculationObject;
@@ -454,7 +459,7 @@ class BottomWindow {
         
         // If not allowed, warn the user
         if (this.isDivideByZero(calcObject)) {
-            snarkyMessage();
+            this.snarkyMessage();
             return -1;
         }
 
@@ -541,5 +546,10 @@ class BottomWindow {
     // Get string representation of bottom window
     getBottomWindowState() {
         return this.bottomWindow.getWindowState();
+    }
+
+    snarkyMessage() {
+        console.log("We got here");
+        alert("Cmon now");
     }
 }
