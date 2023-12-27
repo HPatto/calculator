@@ -320,11 +320,36 @@ function convertLinear(bigIntValue, numDecimals) {
 
 function convertProduct(bigIntValue, numDecimals, isPositive) {
     let resultString = bigIntValue.toString();
-    let decimalString = resultString.slice(resultString.length - numDecimals);
-    let intString = resultString.slice(0, resultString.length - numDecimals);
+    let intString = "";
+    let decimalString;
 
-    console.log("This is the un-checked result");
+    if (numDecimals >= resultString.length) {
+        decimalString = resultString;
+        for (let i = 0; i < numDecimals - resultString.length; i++) {
+            decimalString = "0" + decimalString;
+        }
+    } else {
+        decimalString = resultString.slice(resultString.length - numDecimals);
+        intString = resultString.slice(0, resultString.length - numDecimals);
+    }
+
+    if (intString.length === 0 || (
+        intString.length === 1 &&
+        intString[0] === "-")) {
+            intString = intString + "0";
+    }
+
+    console.log("This is the number of decimals");
+    console.log(numDecimals);
+
+    console.log("This is the result string");
     console.log(resultString);
+
+    console.log("This is the decimal string");
+    console.log(decimalString);
+
+    console.log("This is the int string");
+    console.log(intString);
 
     let intValue = parseInt(intString);
 
