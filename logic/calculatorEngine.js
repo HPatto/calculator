@@ -205,7 +205,6 @@ function convertLinear(bigIntValue, numDecimals) {
 
     let decimalsFound = decimalString.length;
     let needToAddDecimalZeroes = (decimalsFound < numDecimals);
-    let needToAddIntZeroes = (decimalsFound === numDecimals);
 
     if (needToAddDecimalZeroes) {
         let decimalsToAdd = numDecimals - decimalsFound;
