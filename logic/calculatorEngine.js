@@ -236,16 +236,17 @@ function convertLinear(bigIntValue, numDecimals) {
     let decimalString = resultString.slice(resultString.length - numDecimals);
     let intString = resultString.slice(0, resultString.length - numDecimals);
 
-    console.log("This is numDecimals in convertLinear result");
-    console.log(numDecimals);
+    // console.log("This is numDecimals in convertLinear result");
+    // console.log(numDecimals);
 
-    console.log("This is length of resultString");
-    console.log(resultString.length);
+    // console.log("This is resultString");
+    // console.log(resultString);
 
     let decimalsFound = decimalString.length;
-    let needToAddZeroes = (decimalsFound < numDecimals);
+    let needToAddDecimalZeroes = (decimalsFound < numDecimals);
+    let needToAddIntZeroes = (decimalsFound === numDecimals);
 
-    if (needToAddZeroes) {
+    if (needToAddDecimalZeroes) {
         let decimalsToAdd = numDecimals - decimalsFound;
         let extraString = "";
 
@@ -255,12 +256,25 @@ function convertLinear(bigIntValue, numDecimals) {
         decimalString = extraString + decimalString;
     }
 
+    if (intString.length === 0 || (
+        intString.length === 1 &&
+        intString[0] === "-")) {
+            intString = intString + "0";
+    }
+
     // console.log("This is the number of decimals expected");
     // console.log(numDecimals);
 
     let intValue = parseInt(intString);
 
-    let isPositive = !(intValue < 0);
+    // if (intValue == NaN) {
+    //     console.log("Adding an etra 0!");
+    //     intString = intString + "0";
+    // }
+    // console.log("This is the int Value");
+    // console.log(intValue);
+
+    let isPositive = (intString[0] !== "-");
     let hasDecimals = (numDecimals > 0);
     
     if (intValue > MAX_INT_VALUE) {
@@ -286,6 +300,11 @@ function convertLinear(bigIntValue, numDecimals) {
     } else {
         // Remove the negative character from the string
         intString = intString.slice(1);
+        console.log("This is the adapted intString");
+        console.log(intString);
+        // if (needToAddIntZeroes) {
+        //     intString = intString + "0";
+        // }
         resultObject.setIntDigits(intString);
         // Change the boolean in the object
         resultObject.changeSign();
