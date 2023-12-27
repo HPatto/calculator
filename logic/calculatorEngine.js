@@ -62,11 +62,7 @@ class CalculationNumber {
 
     setIntIntermediateNumber () {
         let intScreenBig = BigInt(this.screenNumber.getIntString());
-        console.log("Set the int_intermediate_num");
-        console.log(intScreenBig);
         intScreenBig = intScreenBig * this.individualAdjuster();
-        console.log("Set the updated int_intermediate_num");
-        console.log(intScreenBig);
         return intScreenBig;
     }
 
@@ -124,42 +120,18 @@ export function calculate(calculationObject) {
     let firstCalc = new CalculationNumber(firstNum);
     let secondCalc = new CalculationNumber(secondNum);
 
-    console.log("Before decimal alteration");
-
-    console.log("First calc:");
-    console.log(firstCalc);
-
-    console.log("Second calc:");
-    console.log(secondCalc);
-
     // Adjust to ensure the calculation OoM works
     // firstCalc.adjustForOther(secondCalc.getDecimalCount());
     // secondCalc.adjustForOther(firstCalc.getDecimalCount());
 
-    console.log("After decimal alteration");    
-
-    console.log("First calc:");
-    console.log(firstCalc);
-
-    console.log("Second calc:");
-    console.log(secondCalc);
-
     // Set the number of decimals expected
     let decimalsInResult = decimalsRequired(firstCalc, secondCalc, op);
-    // console.log("decimalsRequired:");
-    // console.log(decimalsInResult);
 
     // Initialize variable to hold sign for product operations
     let resultIsPositive;
 
     // Initialize variable to hold BigInt calculation result.
     let calcResult;
-
-    // Testing
-    console.log("First num obj:");
-    console.log(firstCalc);
-    console.log("Second num obj:");
-    console.log(secondCalc);
 
     // Send the objects off to be calculated
     if (op === "+") {
@@ -187,8 +159,6 @@ export function calculate(calculationObject) {
         resultIsPositive = finalSignPositive(firstCalc, secondCalc);
         return divide(firstCalc, secondCalc, resultIsPositive);
     }
-    console.log("This is the calc result");
-    console.log(calcResult);
 
     /*
     What do we pass in to calculate the final number?
@@ -207,8 +177,7 @@ export function calculate(calculationObject) {
     Add the flag, all good.
     */
 
-
-    // This should return a number object, w.r.t. max and min values
+    // Return a number object, w.r.t. max and min values
     let result = convertResult(
         calcResult,
         decimalsInResult,
@@ -221,8 +190,6 @@ export function calculate(calculationObject) {
 // Function to convert a BigInt value + other parameters
 // to a ScreenNumber object for return.
 function convertResult(bigIntValue, numDecimals, operation, positive) {
-    console.log("This was numDecimals value passed in:");
-    console.log(numDecimals);
 
     if (operation === "+" || operation === "-") {
         return convertLinear(bigIntValue, numDecimals);
@@ -235,12 +202,6 @@ function convertLinear(bigIntValue, numDecimals) {
     let resultString = bigIntValue.toString();
     let decimalString = resultString.slice(resultString.length - numDecimals);
     let intString = resultString.slice(0, resultString.length - numDecimals);
-
-    // console.log("This is numDecimals in convertLinear result");
-    // console.log(numDecimals);
-
-    // console.log("This is resultString");
-    // console.log(resultString);
 
     let decimalsFound = decimalString.length;
     let needToAddDecimalZeroes = (decimalsFound < numDecimals);
@@ -262,17 +223,7 @@ function convertLinear(bigIntValue, numDecimals) {
             intString = intString + "0";
     }
 
-    // console.log("This is the number of decimals expected");
-    // console.log(numDecimals);
-
     let intValue = parseInt(intString);
-
-    // if (intValue == NaN) {
-    //     console.log("Adding an etra 0!");
-    //     intString = intString + "0";
-    // }
-    // console.log("This is the int Value");
-    // console.log(intValue);
 
     let isPositive = (intString[0] !== "-");
     let hasDecimals = (numDecimals > 0);
@@ -287,12 +238,6 @@ function convertLinear(bigIntValue, numDecimals) {
         hasDecimals = true;
     }
 
-    console.log("This is the intstring checked result");
-    console.log(intString);
-
-    console.log("This is the decstring checked result");
-    console.log(decimalString);
-
     let resultObject = new ScreenNumber();
 
     if (isPositive) {
@@ -300,11 +245,6 @@ function convertLinear(bigIntValue, numDecimals) {
     } else {
         // Remove the negative character from the string
         intString = intString.slice(1);
-        console.log("This is the adapted intString");
-        console.log(intString);
-        // if (needToAddIntZeroes) {
-        //     intString = intString + "0";
-        // }
         resultObject.setIntDigits(intString);
         // Change the boolean in the object
         resultObject.changeSign();
@@ -339,18 +279,6 @@ function convertProduct(bigIntValue, numDecimals, isPositive) {
             intString = intString + "0";
     }
 
-    console.log("This is the number of decimals");
-    console.log(numDecimals);
-
-    console.log("This is the result string");
-    console.log(resultString);
-
-    console.log("This is the decimal string");
-    console.log(decimalString);
-
-    console.log("This is the int string");
-    console.log(intString);
-
     let intValue = parseInt(intString);
 
     let hasDecimals = (numDecimals > 0);
@@ -382,10 +310,6 @@ function convertProduct(bigIntValue, numDecimals, isPositive) {
 }
 
 function add(firstNum, secondNum) {
-    console.log("This is the first number:");
-    console.log(firstNum.getCalculationNumber())
-    console.log("This is the second number:");
-    console.log(secondNum.getCalculationNumber())
     return (
         firstNum.getCalculationNumber() +
         secondNum.getCalculationNumber()
@@ -393,10 +317,6 @@ function add(firstNum, secondNum) {
 }
 
 function subtract(firstNum, secondNum) {
-    console.log("This is the first number:");
-    console.log(firstNum.getCalculationNumber())
-    console.log("This is the second number:");
-    console.log(secondNum.getCalculationNumber())
     return (
         firstNum.getCalculationNumber() -
         secondNum.getCalculationNumber()
@@ -432,9 +352,8 @@ function divide(firstNum, secondNum, isPositive) {
     let unalteredDecimalString = remainderDecimal.toString();
     let decimalString = unalteredDecimalString.slice(2, Math.min(
         unalteredDecimalString.length,
-        11
+        11 // Magic number bad - 9 maximum + the slice off the front.
     ));
-    // console.log(decimalString);
 
     let hasDecimals = (decimalString.length > 0);
 
