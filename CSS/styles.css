@@ -25,6 +25,10 @@
     background-color: rgb(230, 230, 230);
 }
 
+.operator {
+    background-color: rgb(237, 77, 2);
+}
+
 .calculator {
     display: flex;
     flex-direction: column;
@@ -117,6 +121,10 @@
     display: flex;
 
     margin-left: 10px;
+}
+
+.eval {
+    background-color: rgb(2, 112, 237)
 }
 
 .grid-row {
